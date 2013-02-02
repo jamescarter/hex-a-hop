@@ -1,0 +1,10 @@
+<module rename-to='hexahop'>
+  <inherits name='playn.PlayN'/>
+
+  <source path='core'/>
+  <source path='html'/>
+
+  <public path="resources" />
+
+  <entry-point class='com.github.jamescarter.hexahop.html.HexAHopHtml'/>
+</module>
