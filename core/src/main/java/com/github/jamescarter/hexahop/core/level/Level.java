@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.Loadable;
-
+import playn.core.GroupLayer;
 import playn.core.Json.Array;
 import playn.core.Json.Object;
 import playn.core.Image;
@@ -16,6 +16,7 @@ import playn.core.ImageLayer;
 import playn.core.PlayN;
 
 public class Level implements Loadable {
+	private static final Image bgImage = assets().getImage("images/gradient.png");
 	private HashMap<Integer, List<Tile>> gridMap = new HashMap<Integer, List<Tile>>();
 	private String name;
 	private int par;
@@ -54,24 +55,54 @@ public class Level implements Loadable {
 
 	@Override
 	public void load() {
-		graphics().rootLayer().clear();
-
-		Image bgImage = assets().getImage("images/gradient.png");
+		GroupLayer levelLayer = graphics().createGroupLayer();
 
 		ImageLayer bgLayer = graphics().createImageLayer(bgImage);
-
-		graphics().rootLayer().add(bgLayer);
 
 		for (int row : gridMap.keySet()) {
 			List<Tile> tileList = gridMap.get(row);
 
-			for (int col=0; col<tileList.size(); col++) {
-				ImageLayer imageLayer = graphics().createImageLayer(tileList.get(col).getImage());
+			// Add even columns first so they overlap properly
+			addTiles(levelLayer, tileList, row, 0); // even
+			addTiles(levelLayer, tileList, row, 1); // odd
+		}
 
-				imageLayer.setTranslation(col * 45, (row * 36) + (18 * (col + 1)));
+		center(levelLayer);
 
-				graphics().rootLayer().add(imageLayer);
-			}
+		graphics().rootLayer().clear();
+		graphics().rootLayer().add(bgLayer);
+		graphics().rootLayer().add(levelLayer);
+	}
+
+	private void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {
+		for (int col=start; col<tileList.size(); col+=2) {
+			ImageLayer imageLayer = graphics().createImageLayer(tileList.get(col).getImage());
+
+			imageLayer.setTranslation(getColPosition(col), getRowPosition(row, col));
+
+			levelLayer.add(imageLayer);
+		}
+	}
+
+	private void center(GroupLayer levelLayer) {
+		int width = gridMap.get(0).size();
+		int height = gridMap.size();
+
+		levelLayer.setTranslation(
+			((640 - (width * 46)) / 2) - 10,
+			((480 - (height * 36)) / 2) - 32
+		);
+	}
+
+	private int getColPosition(int col) {
+		return col * 46;
+	}
+
+	private int getRowPosition(int row, int col) {
+		if (col % 2 == 0) {
+			return (row * 36);
+		} else {
+			return (row * 36) + 18;	
 		}
 	}
 }
