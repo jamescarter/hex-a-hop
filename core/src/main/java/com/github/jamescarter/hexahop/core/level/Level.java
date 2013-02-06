@@ -13,14 +13,18 @@ import com.github.jamescarter.hexahop.core.player.Player;
 import playn.core.GroupLayer;
 import playn.core.Json.Array;
 import playn.core.Json.Object;
+import playn.core.Key;
+import playn.core.Keyboard.Event;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Keyboard;
 import playn.core.PlayN;
 import playn.core.Pointer;
 
 public class Level implements Loadable {
 	private static final Image bgImage = assets().getImage("images/gradient.png");
 	private HashMap<Integer, List<Tile>> gridMap = new HashMap<Integer, List<Tile>>();
+	private List<Direction> moveList = new ArrayList<Direction>();
 	private String name;
 	private int par;
 	private Player player;
@@ -94,10 +98,52 @@ public class Level implements Loadable {
 				move(direction);
 			}
 		});
+
+		PlayN.keyboard().setListener(new Keyboard.Adapter() {
+			@Override
+			public void onKeyDown(Event event) {
+				if (event.key().equals(Key.U) || event.key().equals(Key.Z)) {
+					undo();
+				} else if (event.key().equals(Key.UP) || event.key().equals(Key.W)) {
+					move(Direction.NORTH);
+				} else if (event.key().equals(Key.DOWN) || event.key().equals(Key.S)) {
+					move(Direction.SOUTH);
+				} else if (event.key().equals(Key.Q)) {
+					move(Direction.NORTH_WEST);
+				} else if (event.key().equals(Key.E)) {
+					move(Direction.NORTH_EAST);
+				} else if (event.key().equals(Key.A)) {
+					move(Direction.SOUTH_WEST);
+				} else if (event.key().equals(Key.D)) {
+					move(Direction.SOUTH_EAST);
+				}
+			}
+		});
 	}
 
 	private void move(Direction direction) {
 		// TODO: check it's valid -> add-to-undo -> player.move(direction, isUndo);
+
+		moveList.add(direction);
+
+		player.move(direction, false);
+	}
+
+	/**
+	 * Undo the last move.
+
+	 * @return true if there are more moves to undo, otherwise false.
+	 */
+	private boolean undo() {
+		if (moveList.isEmpty()) {
+			return false;
+		}
+
+		Direction direction = moveList.remove(moveList.size() - 1);
+
+		player.move(direction, true);
+
+		return true;
 	}
 
 	private void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {
