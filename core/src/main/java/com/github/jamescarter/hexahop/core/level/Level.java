@@ -8,18 +8,22 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.Loadable;
+import com.github.jamescarter.hexahop.core.player.Direction;
+import com.github.jamescarter.hexahop.core.player.Player;
 import playn.core.GroupLayer;
 import playn.core.Json.Array;
 import playn.core.Json.Object;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
+import playn.core.Pointer;
 
 public class Level implements Loadable {
 	private static final Image bgImage = assets().getImage("images/gradient.png");
 	private HashMap<Integer, List<Tile>> gridMap = new HashMap<Integer, List<Tile>>();
 	private String name;
 	private int par;
+	private Player player;
 
 	public Level(String json) {
 		Object jsonObj = PlayN.json().parse(json);
@@ -27,7 +31,10 @@ public class Level implements Loadable {
 		name = jsonObj.getString("name");
 		par = jsonObj.getInt("par");
 
+		Array start = jsonObj.getArray("start");
 		Array gridArray = jsonObj.getArray("grid");
+
+		player = new Player(start.getInt(0), start.getInt(1));
 
 		for (int row=0; row<gridArray.length(); row++) {
 			Array tiles = gridArray.getArray(row);
@@ -55,7 +62,7 @@ public class Level implements Loadable {
 
 	@Override
 	public void load() {
-		GroupLayer levelLayer = graphics().createGroupLayer();
+		final GroupLayer levelLayer = graphics().createGroupLayer();
 
 		ImageLayer bgLayer = graphics().createImageLayer(bgImage);
 
@@ -67,11 +74,30 @@ public class Level implements Loadable {
 			addTiles(levelLayer, tileList, row, 1); // odd
 		}
 
+		levelLayer.add(player);
+
 		center(levelLayer);
 
 		graphics().rootLayer().clear();
 		graphics().rootLayer().add(bgLayer);
 		graphics().rootLayer().add(levelLayer);
+
+		PlayN.pointer().setListener(new Pointer.Adapter() {
+			@Override
+			public void onPointerStart(Pointer.Event event) {
+				// Offset clicked location based on where the levelLayer is centered
+				Direction direction = player.getDirection(
+					event.x() - levelLayer.tx(),
+					event.y() - levelLayer.ty()
+				);
+
+				move(direction);
+			}
+		});
+	}
+
+	private void move(Direction direction) {
+		// TODO: check it's valid -> add-to-undo -> player.move(direction, isUndo);
 	}
 
 	private void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {
@@ -90,7 +116,7 @@ public class Level implements Loadable {
 
 		levelLayer.setTranslation(
 			((640 - (width * 46)) / 2) - 10,
-			((480 - (height * 36)) / 2) - 32
+			((480 - (height * 36)) / 2) - 36
 		);
 	}
 
