@@ -23,13 +23,13 @@ public class Player extends ImageLayerGL {
 		setWidth(65);
 		setHeight(80);
 
-		setImage(getImage());
+		setImage();
 
 		setPosition();
 	}
 
-	private Image getImage() {
-		return playerImage.subImage(currentDirection.x(), currentPosition.y(), 65, 80);
+	private void setImage() {
+		setImage(playerImage.subImage(currentDirection.x(), currentPosition.y(), 65, 80));
 	}
 
 	private void setPosition() {
@@ -124,6 +124,7 @@ public class Player extends ImageLayerGL {
 			break;
 		}
 
+		setImage();
 		setPosition();
 	}
 }
