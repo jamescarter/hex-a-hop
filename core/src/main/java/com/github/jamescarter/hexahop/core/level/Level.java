@@ -17,14 +17,15 @@ import playn.core.Keyboard.Event;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
+import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
 
 public class Level implements Loadable {
 	private static final Image bgImage = assets().getImage("images/gradient.png");
+	private GroupLayer levelLayer = graphics().createGroupLayer();
 	private List<Direction> moveList = new ArrayList<Direction>();
 	private TileGrid levelTileGrid;
-	private TileGrid currentTileGrid;
 	private String name;
 	private int par;
 	private Player player;
@@ -40,8 +41,6 @@ public class Level implements Loadable {
 		player = new Player(new Location(start.getInt(0), start.getInt(1)));
 
 		levelTileGrid = new TileGrid(jsonObj.getArray("grid"));
-
-		currentTileGrid = levelTileGrid;
 	}
 
 	public String getName() {
@@ -54,12 +53,10 @@ public class Level implements Loadable {
 
 	@Override
 	public void load() {
-		final GroupLayer levelLayer = graphics().createGroupLayer();
-
 		ImageLayer bgLayer = graphics().createImageLayer(bgImage);
 
-		for (int row=0; row<currentTileGrid.rows(); row++) {
-			List<Tile> tileList = currentTileGrid.rowTileList(row);
+		for (int row=0; row<levelTileGrid.rows(); row++) {
+			List<Tile> tileList = levelTileGrid.rowTileList(row);
 
 			// Add even columns first so they overlap properly
 			addTiles(levelLayer, tileList, row, 0); // even
@@ -110,10 +107,14 @@ public class Level implements Loadable {
 	}
 
 	private void move(Direction direction) {
-		if (currentTileGrid.isValidMove(player.location(), direction)) {
+		if (levelTileGrid.isValidMove(player.location(), direction)) {
 			moveList.add(direction);
 
+			deactivateTile(player.location());
+
 			player.move(direction, false);
+
+			// TODO: levelTileGrid.activateTile(player.location());
 		}
 	}
 
@@ -131,16 +132,45 @@ public class Level implements Loadable {
 
 		player.move(direction, true);
 
+		restoreTile(player.location());
+
 		return true;
+	}
+
+	private void deactivateTile(Location location) {
+		if (levelTileGrid.deactivateTile(player.location())) {
+			getLayer(location).setVisible(false);
+		}
+	}
+
+	private void restoreTile(Location location) {
+		getLayer(location).setVisible(true);
+
+		levelTileGrid.restoreTile(player.location());
+	}
+
+	public Layer getLayer(Location location) {
+		int colPosition = getColPosition(location.col());
+		int rowPosition = getRowPosition(location.row(), location.col());
+
+		for (int i=0; i<levelLayer.size(); i++) {
+			Layer layer = levelLayer.get(i);
+
+			if (layer instanceof ImageLayer) {
+				if (layer.tx() == colPosition && layer.ty() == rowPosition) {
+					return layer;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {
 		for (int col=start; col<tileList.size(); col+=2) {
 			ImageLayer imageLayer = graphics().createImageLayer(tileList.get(col).getImage());
 
-			imageLayer.setTranslation(getColPosition(col), getRowPosition(row, col));
-
-			levelLayer.add(imageLayer);
+			levelLayer.addAt(imageLayer, getColPosition(col), getRowPosition(row, col));
 		}
 	}
 
