@@ -3,6 +3,8 @@ package com.github.jamescarter.hexahop.core.player;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
+import com.github.jamescarter.hexahop.core.level.Location;
+
 import playn.core.Image;
 import playn.core.gl.ImageLayerGL;
 
@@ -10,15 +12,12 @@ public class Player extends ImageLayerGL {
 	private static final Image playerImage = assets().getImage("images/player.png");
 	private Direction currentDirection = Direction.SOUTH;
 	private Position currentPosition = Position.STANDING;
+	private Location location;
 
-	private int col;
-	private int row;
-
-	public Player(int col, int row) {
+	public Player(Location location) {
 		super(graphics().ctx(), playerImage);
 
-		this.col = col;
-		this.row = row;
+		this.location = location;
 
 		setWidth(65);
 		setHeight(80);
@@ -33,18 +32,18 @@ public class Player extends ImageLayerGL {
 	}
 
 	private void setPosition() {
-		setTranslation(getColPosition(), getRowPosition());
+		setTranslation(getGridColPosition(), getGridRowPosition());
 	}
 
-	private int getColPosition() {
-		return col * 46;
+	private int getGridColPosition() {
+		return location.col() * 46;
 	}
 
-	private int getRowPosition() {
-		if (col % 2 == 0) {
-			return (row * 36) - 18;
+	private int getGridRowPosition() {
+		if (location.col() % 2 == 0) {
+			return (location.row() * 36) - 18;
 		} else {
-			return (row * 36);	
+			return (location.row() * 36);	
 		}
 	}
 
@@ -87,44 +86,13 @@ public class Player extends ImageLayerGL {
 			direction = direction.opposite();
 		}
 
-		switch(direction) {
-			case NORTH:
-				--row;
-			break;
-			case SOUTH:
-				++row;
-			break;
-			case NORTH_EAST:
-				++col;
-
-				if (col % 2 != 0) {
-					--row;
-				}
-			break;
-			case SOUTH_EAST:
-				++col;
-
-				if (col % 2 == 0) {
-					++row;
-				}
-			break;
-			case NORTH_WEST:
-				--col;
-
-				if (col % 2 != 0) {
-					--row;
-				}
-			break;
-			case SOUTH_WEST:
-				--col;
-
-				if (col % 2 == 0) {
-					++row;
-				}
-			break;
-		}
+		location.move(direction);
 
 		setImage();
 		setPosition();
+	}
+
+	public Location location() {
+		return location;
 	}
 }

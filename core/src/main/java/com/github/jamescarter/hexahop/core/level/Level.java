@@ -4,7 +4,6 @@ import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.Loadable;
@@ -23,33 +22,26 @@ import playn.core.Pointer;
 
 public class Level implements Loadable {
 	private static final Image bgImage = assets().getImage("images/gradient.png");
-	private HashMap<Integer, List<Tile>> gridMap = new HashMap<Integer, List<Tile>>();
 	private List<Direction> moveList = new ArrayList<Direction>();
+	private TileGrid levelTileGrid;
+	private TileGrid currentTileGrid;
 	private String name;
 	private int par;
 	private Player player;
 
-	public Level(String json) {
-		Object jsonObj = PlayN.json().parse(json);
+	public Level(String levelJson) {
+		Object jsonObj = PlayN.json().parse(levelJson);
 
 		name = jsonObj.getString("name");
 		par = jsonObj.getInt("par");
 
 		Array start = jsonObj.getArray("start");
-		Array gridArray = jsonObj.getArray("grid");
 
-		player = new Player(start.getInt(0), start.getInt(1));
+		player = new Player(new Location(start.getInt(0), start.getInt(1)));
 
-		for (int row=0; row<gridArray.length(); row++) {
-			Array tiles = gridArray.getArray(row);
-			List<Tile> tileList = new ArrayList<Tile>();
+		levelTileGrid = new TileGrid(jsonObj.getArray("grid"));
 
-			gridMap.put(row, tileList);
-
-			for (int tile=0; tile<tiles.length(); tile++) {
-				tileList.add(Tile.getTile(tiles.getInt(tile)));
-			}
-		}
+		currentTileGrid = levelTileGrid;
 	}
 
 	public String getName() {
@@ -60,18 +52,14 @@ public class Level implements Loadable {
 		return par;
 	}
 
-	public Tile getTile(int row, int col) {
-		return gridMap.get(row).get(col);
-	}
-
 	@Override
 	public void load() {
 		final GroupLayer levelLayer = graphics().createGroupLayer();
 
 		ImageLayer bgLayer = graphics().createImageLayer(bgImage);
 
-		for (int row : gridMap.keySet()) {
-			List<Tile> tileList = gridMap.get(row);
+		for (int row=0; row<currentTileGrid.rows(); row++) {
+			List<Tile> tileList = currentTileGrid.rowTileList(row);
 
 			// Add even columns first so they overlap properly
 			addTiles(levelLayer, tileList, row, 0); // even
@@ -122,11 +110,11 @@ public class Level implements Loadable {
 	}
 
 	private void move(Direction direction) {
-		// TODO: check it's valid -> add-to-undo -> player.move(direction, isUndo);
+		if (currentTileGrid.isValidMove(player.location(), direction)) {
+			moveList.add(direction);
 
-		moveList.add(direction);
-
-		player.move(direction, false);
+			player.move(direction, false);
+		}
 	}
 
 	/**
@@ -157,12 +145,9 @@ public class Level implements Loadable {
 	}
 
 	private void center(GroupLayer levelLayer) {
-		int width = gridMap.get(0).size();
-		int height = gridMap.size();
-
 		levelLayer.setTranslation(
-			((640 - (width * 46)) / 2) - 10,
-			((480 - (height * 36)) / 2) - 36
+			((640 - (levelTileGrid.cols() * 46)) / 2) - 10,
+			((480 - (levelTileGrid.rows() * 36)) / 2) - 36
 		);
 	}
 
