@@ -5,21 +5,21 @@ import playn.core.Image;
 
 public enum Tile {
 	EMPTY,
-	NORMAL					(1,  64, 4),
-	COLLAPSABLE				(2, 128, 4),
-	COLLAPSE_DOOR			(3, 192, 4),
-	TRAMPOLINE				(4, 256, 4),
-	SPINNER					(5, 320, 4),
-	WALL					(6, 384, 4),
-	COLLAPSABLE2			(7, 448, 4),
-	COLLAPSE_DOOR2			(8, 513, 4),
-	GUN						(9, 576, 4),
-	TRAP					(10, 0, 68),
-	BUILDER					(12, 128, 68),
-	FLOATING_BALL			(14, 256, 68),
-	LIFT_DOWN				(15, 320, 68),
-	LIFT_UP					(16, 384, 68),
-	TILE_LINK_2				(32, 576, 320),
+	NORMAL					(1,  1, 0),
+	COLLAPSABLE				(2, 2, 0),
+	COLLAPSE_DOOR			(3, 3, 0),
+	TRAMPOLINE				(4, 4, 0),
+	SPINNER					(5, 5, 0),
+	WALL					(6, 6, 0),
+	COLLAPSABLE2			(7, 7, 0),
+	COLLAPSE_DOOR2			(8, 8, 0),
+	GUN						(9, 9, 0),
+	TRAP					(10, 0, 1),
+	BUILDER					(12, 2, 1),
+	FLOATING_BALL			(14, 4, 1),
+	LIFT_DOWN				(15, 5, 1),
+	LIFT_UP					(16, 6, 1),
+	TILE_LINK_2				(32, 9, 5),
 	TILE_LINK_3				(33, NORMAL, TILE_LINK_2),
 	TILE_LINK_4				(34, COLLAPSABLE, TILE_LINK_2),
 	TILE_GREEN_FRAGMENT		(36, TRAMPOLINE, TILE_LINK_2),
@@ -32,21 +32,24 @@ public enum Tile {
 	UNKNONW_2				(69, SPINNER, YELLOW_CONE),
 	UNKNONW_3				(66, COLLAPSABLE, YELLOW_CONE),
 	UNKNONW_4				(65, NORMAL, YELLOW_CONE),
-	UNKNONW_5				(73, GUN, YELLOW_CONE);
+	UNKNONW_5				(73, GUN, YELLOW_CONE),
+	INCOMPLETE				(20, 1, 2),
+	COMPLETE				(21, 2, 2),
+	PERFECT					(22, 3, 2);
 
 	private static final Image tileImage = assets().getImage("images/tiles.png");
 
 	private Tile[] tiles;
 	private int id;
-	private int x;
-	private int y;
+	private int col;
+	private int row;
 
 	private Tile() { }
 
-	private Tile(int id, int x, int y) {
+	private Tile(int id, int col, int row) {
 		this.id = id;
-		this.x = x;
-		this.y = y;
+		this.col = col;
+		this.row = row;
 	}
 
 	private Tile (int id, Tile ... tiles) {
@@ -65,7 +68,7 @@ public enum Tile {
 			// TODO:
 			return null;
 		} else {
-			return tileImage.subImage(x, y, 64, 60);
+			return tileImage.subImage(col * 64, row * 64, 64, 64);
 		}
 	}
 

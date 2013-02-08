@@ -1,4 +1,4 @@
-package com.github.jamescarter.hexahop.core.menu;
+package com.github.jamescarter.hexahop.core.screen;
 
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
@@ -8,22 +8,23 @@ import playn.core.ImageLayer;
 
 import com.github.jamescarter.hexahop.core.Loadable;
 
-public class TitleMenu implements Loadable {
-	private ImageLayer titleLayer;
-
+public class TitleScreen implements Loadable {
 	@Override
 	public void load() {
 		GroupLayer rootLayer = graphics().rootLayer();
 
-		rootLayer.clear();
+		GroupLayer titleMenuLayer = graphics().createGroupLayer();
 
 		Image bgImage = assets().getImage("images/gradient.png");
 		Image titleImage = assets().getImage("images/title.png");;
 
 		ImageLayer bgLayer = graphics().createImageLayer(bgImage);
-		titleLayer = graphics().createImageLayer(titleImage);
+		ImageLayer titleLayer = graphics().createImageLayer(titleImage);
 
-		rootLayer.add(bgLayer);
-		rootLayer.add(titleLayer);
+		titleMenuLayer.add(bgLayer);
+		titleMenuLayer.add(titleLayer);
+
+		rootLayer.clear();
+		rootLayer.add(titleMenuLayer);
 	}
 }

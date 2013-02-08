@@ -1,13 +1,13 @@
 package com.github.jamescarter.hexahop.core;
 
-import com.github.jamescarter.hexahop.core.menu.TitleMenu;
+import com.github.jamescarter.hexahop.core.screen.TitleScreen;
 
 import playn.core.Game;
 
 public class HexAHop implements Game {
 	@Override
 	public void init() {
-		new TitleMenu().load();
+		new TitleScreen().load();
 	}
 
 	@Override
