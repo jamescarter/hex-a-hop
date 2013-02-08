@@ -6,78 +6,58 @@ import static playn.core.PlayN.graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.jamescarter.hexahop.core.Loadable;
+import com.github.jamescarter.hexahop.core.grid.GridLoader;
+import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
+import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
-import playn.core.GroupLayer;
 import playn.core.Json.Array;
 import playn.core.Json.Object;
 import playn.core.Key;
 import playn.core.Keyboard.Event;
-import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
 
-public class Level implements Loadable {
-	private static final Image bgImage = assets().getImage("images/gradient.png");
-	private GroupLayer levelLayer = graphics().createGroupLayer();
+// TODO: detect when level is completed
+public class Level extends GridLoader {
+	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private List<Direction> moveList = new ArrayList<Direction>();
-	private TileGrid levelTileGrid;
-	private String name;
+	private LevelTileGrid levelTileGrid;
 	private int par;
 	private Player player;
 
 	public Level(String levelJson) {
 		Object jsonObj = PlayN.json().parse(levelJson);
 
-		name = jsonObj.getString("name");
 		par = jsonObj.getInt("par");
 
 		Array start = jsonObj.getArray("start");
 
 		player = new Player(new Location(start.getInt(0), start.getInt(1)));
 
-		levelTileGrid = new TileGrid(jsonObj.getArray("grid"));
+		levelTileGrid = new LevelTileGrid(jsonObj.getArray("grid"));
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public int getPar() {
+	public int par() {
 		return par;
 	}
 
 	@Override
 	public void load() {
-		ImageLayer bgLayer = graphics().createImageLayer(bgImage);
+		super.load();
 
-		for (int row=0; row<levelTileGrid.rows(); row++) {
-			List<Tile> tileList = levelTileGrid.rowTileList(row);
-
-			// Add even columns first so they overlap properly
-			addTiles(levelLayer, tileList, row, 0); // even
-			addTiles(levelLayer, tileList, row, 1); // odd
-		}
-
-		levelLayer.add(player);
-
-		center(levelLayer);
-
-		graphics().rootLayer().clear();
-		graphics().rootLayer().add(bgLayer);
-		graphics().rootLayer().add(levelLayer);
+		getGridLayer().add(player);
 
 		PlayN.pointer().setListener(new Pointer.Adapter() {
 			@Override
 			public void onPointerStart(Pointer.Event event) {
 				// Offset clicked location based on where the levelLayer is centered
 				Direction direction = player.getDirection(
-					event.x() - levelLayer.tx(),
-					event.y() - levelLayer.ty()
+					event.x() - getGridLayer().tx(),
+					event.y() - getGridLayer().ty()
 				);
 
 				move(direction);
@@ -153,8 +133,8 @@ public class Level implements Loadable {
 		int colPosition = getColPosition(location.col());
 		int rowPosition = getRowPosition(location.row(), location.col());
 
-		for (int i=0; i<levelLayer.size(); i++) {
-			Layer layer = levelLayer.get(i);
+		for (int i=0; i<getGridLayer().size(); i++) {
+			Layer layer = getGridLayer().get(i);
 
 			if (layer instanceof ImageLayer) {
 				if (layer.tx() == colPosition && layer.ty() == rowPosition) {
@@ -166,30 +146,13 @@ public class Level implements Loadable {
 		return null;
 	}
 
-	private void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {
-		for (int col=start; col<tileList.size(); col+=2) {
-			ImageLayer imageLayer = graphics().createImageLayer(tileList.get(col).getImage());
-
-			levelLayer.addAt(imageLayer, getColPosition(col), getRowPosition(row, col));
-		}
+	@Override
+	public TileGrid<Tile> getTileGrid() {
+		return levelTileGrid;
 	}
 
-	private void center(GroupLayer levelLayer) {
-		levelLayer.setTranslation(
-			((640 - (levelTileGrid.cols() * 46)) / 2) - 10,
-			((480 - (levelTileGrid.rows() * 36)) / 2) - 36
-		);
-	}
-
-	private int getColPosition(int col) {
-		return col * 46;
-	}
-
-	private int getRowPosition(int row, int col) {
-		if (col % 2 == 0) {
-			return (row * 36);
-		} else {
-			return (row * 36) + 18;	
-		}
+	@Override
+	public Layer getBackgroundLayer() {
+		return bgLayer;
 	}
 }

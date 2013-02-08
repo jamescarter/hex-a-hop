@@ -1,5 +1,4 @@
 {
-	"name": "tri_mesh",
 	"par": 128,
 	"start": [ 0, 4 ],
 	"grid": [
