@@ -45,7 +45,19 @@ public class LevelTileGrid extends TileGrid<Tile> {
 	public void restoreTile(Location location) {
 		gridStatusMap.get(location.row()).set(
 			location.col(),
-			baseGridMap.get(location.row()).get(location.col())
+			baseTileAt(location)
 		);
+	}
+
+	public boolean complete() {
+		for (int row=0; row<gridStatusMap.size(); row++) {
+			for (Tile tile : gridStatusMap.get(row)) {
+				if (tile == Tile.COLLAPSABLE || tile == Tile.COLLAPSABLE2) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }

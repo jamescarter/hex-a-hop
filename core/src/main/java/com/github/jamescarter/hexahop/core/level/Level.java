@@ -11,6 +11,8 @@ import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
+import com.github.jamescarter.hexahop.core.screen.MapScreen;
+
 import playn.core.Json.Array;
 import playn.core.Json.Object;
 import playn.core.Key;
@@ -95,6 +97,10 @@ public class Level extends GridLoader {
 			player.move(direction, false);
 
 			// TODO: levelTileGrid.activateTile(player.location());
+
+			if (levelTileGrid.complete()) {
+				new MapScreen().load();
+			}
 		}
 	}
 

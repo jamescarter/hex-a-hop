@@ -8,12 +8,14 @@ import java.util.List;
 
 import playn.core.Color;
 import playn.core.ImageLayer;
+import playn.core.Json.Object;
 import playn.core.Layer;
 import playn.core.PlayN;
-import playn.core.Json.Object;
+import playn.core.Pointer;
 import playn.core.Surface;
 import playn.core.SurfaceLayer;
 
+import com.github.jamescarter.hexahop.core.callback.LevelLoadCallback;
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.MapTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
@@ -25,10 +27,16 @@ public class MapScreen extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private MapTileGrid mapTileGrid;
 
-	public MapScreen() throws Exception {
-		Object jsonObj = PlayN.json().parse(
-			assets().getTextSync("levels/map.json")
-		);
+	public MapScreen() {
+		Object jsonObj;
+		try {
+			jsonObj = PlayN.json().parse(
+				assets().getTextSync("levels/map.json")
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
 
 		mapTileGrid = new MapTileGrid(jsonObj.getArray("grid"));
 	}
@@ -61,6 +69,25 @@ public class MapScreen extends GridLoader {
 		add(lineLayer);
 
 		super.load();
+
+		PlayN.pointer().setListener(new Pointer.Adapter() {
+			@Override
+			public void onPointerStart(Pointer.Event event) {
+				int x = (int) ((event.x() - getGridLayer().tx()) / 64);
+				int y = (int) ((event.y() - getGridLayer().ty()) / 64);
+
+				Location location = new Location(x, y);
+
+				// Make sure the level is activated before allowing the user to load it
+				if (mapTileGrid.baseTileAt(location) != null) {
+					Integer levelId = mapTileGrid.statusAt(new Location(x, y));
+
+					if (levelId != null) {
+						assets().getText(String.format("levels/%03d.json", levelId), new LevelLoadCallback());
+					}
+				}
+			}
+		});
 	}
 
 	private List<Location> connectedTo(Location location) {

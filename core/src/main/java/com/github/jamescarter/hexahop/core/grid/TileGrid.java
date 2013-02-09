@@ -16,11 +16,15 @@ public abstract class TileGrid<E> {
 	}
 
 	public int rows() {
-		return baseGridMap.size();
+		return gridStatusMap.size();
 	}
 
 	public int cols() {
-		return baseGridMap.get(0).size();
+		return gridStatusMap.get(0).size();
+	}
+
+	public Tile baseTileAt(Location location) {
+		return baseGridMap.get(location.row()).get(location.col());
 	}
 
 	public E statusAt(Location location) {
