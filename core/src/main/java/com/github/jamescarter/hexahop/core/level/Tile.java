@@ -4,8 +4,7 @@ import static playn.core.PlayN.assets;
 import playn.core.Image;
 
 public enum Tile {
-	EMPTY,
-	NORMAL					(1,  1, 0),
+	NORMAL					(1, 1, 0),
 	COLLAPSABLE				(2, 2, 0),
 	COLLAPSE_DOOR			(3, 3, 0),
 	TRAMPOLINE				(4, 4, 0),
@@ -33,9 +32,10 @@ public enum Tile {
 	UNKNONW_3				(66, COLLAPSABLE, YELLOW_CONE),
 	UNKNONW_4				(65, NORMAL, YELLOW_CONE),
 	UNKNONW_5				(73, GUN, YELLOW_CONE),
-	INCOMPLETE				(20, 1, 2),
-	COMPLETE				(21, 2, 2),
-	PERFECT					(22, 3, 2);
+	JOIN					(80, 0, 2),
+	INCOMPLETE				(81, 1, 2),
+	COMPLETE				(82, 2, 2),
+	PERFECT					(83, 3, 2);
 
 	private static final Image tileImage = assets().getImage("images/tiles.png");
 
@@ -43,8 +43,6 @@ public enum Tile {
 	private int id;
 	private int col;
 	private int row;
-
-	private Tile() { }
 
 	private Tile(int id, int col, int row) {
 		this.id = id;
@@ -79,6 +77,6 @@ public enum Tile {
 			}
 		}
 
-		return EMPTY;
+		return null;
 	}
 }

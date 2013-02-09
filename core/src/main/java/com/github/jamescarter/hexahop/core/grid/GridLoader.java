@@ -18,7 +18,7 @@ public abstract class GridLoader implements Loadable {
 		for (int row=0; row<getTileGrid().rows(); row++) {
 			List<Tile> tileList = getTileGrid().rowTileList(row);
 
-			// Add even columns first so they overlap properly
+			// Add even column tiles first so they overlap properly with the odd columns
 			addTiles(gridLayer, tileList, row, 0); // even
 			addTiles(gridLayer, tileList, row, 1); // odd
 		}
@@ -32,10 +32,18 @@ public abstract class GridLoader implements Loadable {
 
 	public void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {
 		for (int col=start; col<tileList.size(); col+=2) {
-			ImageLayer imageLayer = graphics().createImageLayer(tileList.get(col).getImage());
+			Tile tile = tileList.get(col);
 
-			levelLayer.addAt(imageLayer, getColPosition(col), getRowPosition(row, col));
+			if (tile != null) {
+				ImageLayer imageLayer = graphics().createImageLayer(tile.getImage());
+
+				levelLayer.addAt(imageLayer, getColPosition(col, 0), getRowPosition(row, col, 0));
+			}
 		}
+	}
+
+	public void add(Layer layer) {
+		gridLayer.add(layer);
 	}
 
 	public void center(GroupLayer levelLayer) {
@@ -45,15 +53,15 @@ public abstract class GridLoader implements Loadable {
 		);
 	}
 
-	public int getColPosition(int col) {
-		return col * 46;
+	public int getColPosition(int col, int offset) {
+		return (col * 46) + offset;
 	}
 
-	public int getRowPosition(int row, int col) {
+	public int getRowPosition(int row, int col, int offset) {
 		if (col % 2 == 0) {
-			return (row * 36);
+			return (row * 36) + offset;
 		} else {
-			return (row * 36) + 18;	
+			return (row * 36) + 18 + offset;	
 		}
 	}
 

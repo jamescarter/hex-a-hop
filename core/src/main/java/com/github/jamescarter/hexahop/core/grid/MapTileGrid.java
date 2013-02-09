@@ -22,8 +22,18 @@ public class MapTileGrid extends TileGrid<Integer> {
 			for (int tile=0; tile<tiles.length(); tile++) {
 				int levelId = tiles.getInt(tile);
 
-				tileList.add((levelId == 0) ? Tile.EMPTY : Tile.INCOMPLETE);
-				levelIdList.add(levelId);
+				if (levelId == 0) {
+					tileList.add(null);
+					levelIdList.add(null);
+				} else {
+					if (levelId < 0) {
+						tileList.add(Tile.JOIN);
+					} else {
+						tileList.add(Tile.INCOMPLETE);
+					}
+
+					levelIdList.add(levelId);
+				}
 			}
 		}
 	}

@@ -87,7 +87,7 @@ public class Level extends GridLoader {
 	}
 
 	private void move(Direction direction) {
-		if (levelTileGrid.isValidMove(player.location(), direction)) {
+		if (levelTileGrid.canMove(player.location(), direction)) {
 			moveList.add(direction);
 
 			deactivateTile(player.location());
@@ -130,8 +130,8 @@ public class Level extends GridLoader {
 	}
 
 	public Layer getLayer(Location location) {
-		int colPosition = getColPosition(location.col());
-		int rowPosition = getRowPosition(location.row(), location.col());
+		int colPosition = getColPosition(location.col(), 0);
+		int rowPosition = getRowPosition(location.row(), location.col(), 0);
 
 		for (int i=0; i<getGridLayer().size(); i++) {
 			Layer layer = getGridLayer().get(i);

@@ -3,13 +3,23 @@ package com.github.jamescarter.hexahop.core.screen;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import playn.core.Color;
 import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Json.Object;
+import playn.core.Surface;
+import playn.core.SurfaceLayer;
+
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.MapTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
+import com.github.jamescarter.hexahop.core.level.Location;
+import com.github.jamescarter.hexahop.core.level.Tile;
+import com.github.jamescarter.hexahop.core.player.Direction;
 
 public class MapScreen extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
@@ -25,9 +35,47 @@ public class MapScreen extends GridLoader {
 
 	@Override
 	public void load() {
-		super.load();
+		SurfaceLayer lineLayer = graphics().createSurfaceLayer(1000, 480);
+		Surface surface = lineLayer.surface();
+		surface.setFillColor(Color.rgb(39, 23, 107));
 
-		// TODO: draw lines between points
+		// draw lines between connections
+		for (int row=0; row<getTileGrid().rows(); row++) {
+			List<Tile> tileList = getTileGrid().rowTileList(row);
+
+			for (int col=0; col<tileList.size(); col++) {
+				if (tileList.get(col) != null) {
+					for (Location toLocation : connectedTo(new Location(col, row))) {
+						surface.drawLine(
+							getColPosition(col, 32),
+							getRowPosition(row, col, 38),
+							getColPosition(toLocation.col(), 32),
+							getRowPosition(toLocation.row(), toLocation.col(), 38),
+							2
+						);
+					}
+				}
+			}
+		}
+
+		add(lineLayer);
+
+		super.load();
+	}
+
+	private List<Location> connectedTo(Location location) {
+		List<Location> locationList = new ArrayList<Location>();
+
+		for (Direction direction : Direction.values()) {
+			if (mapTileGrid.canMove(location, direction)) {
+				Location newLocation = location.clone();
+				newLocation.move(direction);
+
+				locationList.add(newLocation);
+			}
+		}
+
+		return locationList;
 	}
 
 	@Override

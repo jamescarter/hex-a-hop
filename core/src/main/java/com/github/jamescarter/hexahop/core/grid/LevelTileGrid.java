@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
-import com.github.jamescarter.hexahop.core.player.Direction;
-
 import playn.core.Json.Array;
 
 public class LevelTileGrid extends TileGrid<Tile> {
@@ -27,32 +25,6 @@ public class LevelTileGrid extends TileGrid<Tile> {
 		}
 	}
 
-	public Tile getTile(Location location) {
-		if (location.row() >= gridStatusMap.size() || location.row() < 0) {
-			return Tile.EMPTY;
-		}
-
-		List<Tile> tileList = gridStatusMap.get(location.row());
-
-		if (location.col() >= tileList.size() || location.col() < 0) {
-			return Tile.EMPTY;
-		}
-
-		return tileList.get(location.col());
-	}
-
-	public boolean isValidMove(Location fromLocation, Direction inDirection) {
-		Location newLocation = fromLocation.clone();
-
-		newLocation.move(inDirection);
-
-		if (getTile(newLocation) == Tile.EMPTY) {
-			return false;
-		}
-
-		return true;
-	}
-
 	/**
 	 * Attempt to deactivate the tile at location
 	 * 
@@ -63,7 +35,7 @@ public class LevelTileGrid extends TileGrid<Tile> {
 		List<Tile> tileList = gridStatusMap.get(location.row());
 
 		if (tileList.get(location.col()) != Tile.NORMAL) {
-			tileList.set(location.col(), Tile.EMPTY);
+			tileList.set(location.col(), null);
 			return true;
 		}
 
