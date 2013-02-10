@@ -3,7 +3,6 @@ package com.github.jamescarter.hexahop.core.screen;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import playn.core.Color;
@@ -21,13 +20,16 @@ import com.github.jamescarter.hexahop.core.grid.MapTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
-import com.github.jamescarter.hexahop.core.player.Direction;
 
 public class MapScreen extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private MapTileGrid mapTileGrid;
 
 	public MapScreen() {
+		this(null);
+	}
+
+	public MapScreen(Location completedLevelLocation) {
 		Object jsonObj;
 		try {
 			jsonObj = PlayN.json().parse(
@@ -38,7 +40,11 @@ public class MapScreen extends GridLoader {
 			return;
 		}
 
-		mapTileGrid = new MapTileGrid(jsonObj.getArray("grid"));
+		mapTileGrid = new MapTileGrid(jsonObj);
+
+		if (completedLevelLocation != null) {
+			mapTileGrid.unlockConnected(completedLevelLocation);
+		}
 	}
 
 	@Override
@@ -47,13 +53,17 @@ public class MapScreen extends GridLoader {
 		Surface surface = lineLayer.surface();
 		surface.setFillColor(Color.rgb(39, 23, 107));
 
+		boolean addLineLayer = false;
+
 		// draw lines between connections
 		for (int row=0; row<getTileGrid().rows(); row++) {
 			List<Tile> tileList = getTileGrid().rowTileList(row);
 
 			for (int col=0; col<tileList.size(); col++) {
 				if (tileList.get(col) != null) {
-					for (Location toLocation : connectedTo(new Location(col, row))) {
+					for (Location toLocation : mapTileGrid.connectedTo(new Location(col, row))) {
+						addLineLayer = true;
+
 						surface.drawLine(
 							getColPosition(col, 32),
 							getRowPosition(row, col, 38),
@@ -66,7 +76,9 @@ public class MapScreen extends GridLoader {
 			}
 		}
 
-		add(lineLayer);
+		if (addLineLayer) {
+			add(lineLayer);
+		}
 
 		super.load();
 
@@ -79,30 +91,13 @@ public class MapScreen extends GridLoader {
 				Location location = new Location(x, y);
 
 				// Make sure the level is activated before allowing the user to load it
-				if (mapTileGrid.baseTileAt(location) != null) {
-					Integer levelId = mapTileGrid.statusAt(new Location(x, y));
+				if (mapTileGrid.statusAt(new Location(x, y)) != null) {
+					Integer levelId = mapTileGrid.baseTileAt(location);
 
-					if (levelId != null) {
-						assets().getText(String.format("levels/%03d.json", levelId), new LevelLoadCallback());
-					}
+					assets().getText(String.format("levels/%03d.json", levelId), new LevelLoadCallback(location));
 				}
 			}
 		});
-	}
-
-	private List<Location> connectedTo(Location location) {
-		List<Location> locationList = new ArrayList<Location>();
-
-		for (Direction direction : Direction.values()) {
-			if (mapTileGrid.canMove(location, direction)) {
-				Location newLocation = location.clone();
-				newLocation.move(direction);
-
-				locationList.add(newLocation);
-			}
-		}
-
-		return locationList;
 	}
 
 	@Override

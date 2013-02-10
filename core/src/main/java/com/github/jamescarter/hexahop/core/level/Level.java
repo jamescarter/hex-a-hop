@@ -15,7 +15,6 @@ import com.github.jamescarter.hexahop.core.screen.MapScreen;
 
 import playn.core.Json.Array;
 import playn.core.Json.Object;
-import playn.core.Key;
 import playn.core.Keyboard.Event;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
@@ -23,15 +22,17 @@ import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
 
-// TODO: detect when level is completed
 public class Level extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
+	private Location location;
 	private List<Direction> moveList = new ArrayList<Direction>();
 	private LevelTileGrid levelTileGrid;
 	private int par;
 	private Player player;
 
-	public Level(String levelJson) {
+	public Level(Location location, String levelJson) {
+		this.location = location;
+
 		Object jsonObj = PlayN.json().parse(levelJson);
 
 		par = jsonObj.getInt("par");
@@ -69,20 +70,32 @@ public class Level extends GridLoader {
 		PlayN.keyboard().setListener(new Keyboard.Adapter() {
 			@Override
 			public void onKeyDown(Event event) {
-				if (event.key().equals(Key.U) || event.key().equals(Key.Z)) {
-					undo();
-				} else if (event.key().equals(Key.UP) || event.key().equals(Key.W)) {
-					move(Direction.NORTH);
-				} else if (event.key().equals(Key.DOWN) || event.key().equals(Key.S)) {
-					move(Direction.SOUTH);
-				} else if (event.key().equals(Key.Q)) {
-					move(Direction.NORTH_WEST);
-				} else if (event.key().equals(Key.E)) {
-					move(Direction.NORTH_EAST);
-				} else if (event.key().equals(Key.A)) {
-					move(Direction.SOUTH_WEST);
-				} else if (event.key().equals(Key.D)) {
-					move(Direction.SOUTH_EAST);
+				switch(event.key()) {
+					case U:
+					case Z:
+						undo();
+					break;
+					case UP:
+					case W:
+						move(Direction.NORTH);
+					break;
+					case DOWN:
+					case S:
+						move(Direction.SOUTH);
+					break;
+					case Q:
+						move(Direction.NORTH_WEST);
+					break;
+					case E:
+						move(Direction.NORTH_EAST);
+					break;
+					case A:
+						move(Direction.SOUTH_WEST);
+					break;
+					case D:
+						move(Direction.SOUTH_EAST);
+					break;
+					default:
 				}
 			}
 		});
@@ -99,7 +112,7 @@ public class Level extends GridLoader {
 			// TODO: levelTileGrid.activateTile(player.location());
 
 			if (levelTileGrid.complete()) {
-				new MapScreen().load();
+				new MapScreen(location).load();
 			}
 		}
 	}
@@ -135,7 +148,7 @@ public class Level extends GridLoader {
 		levelTileGrid.restoreTile(player.location());
 	}
 
-	public Layer getLayer(Location location) {
+	private Layer getLayer(Location location) {
 		int colPosition = getColPosition(location.col(), 0);
 		int rowPosition = getRowPosition(location.row(), location.col(), 0);
 

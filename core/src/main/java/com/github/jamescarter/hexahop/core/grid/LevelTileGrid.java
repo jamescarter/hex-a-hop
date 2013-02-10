@@ -43,10 +43,7 @@ public class LevelTileGrid extends TileGrid<Tile> {
 	}
 
 	public void restoreTile(Location location) {
-		gridStatusMap.get(location.row()).set(
-			location.col(),
-			baseTileAt(location)
-		);
+		setStatusAt(location, baseTileAt(location));
 	}
 
 	public boolean complete() {
