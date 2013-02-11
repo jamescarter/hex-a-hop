@@ -44,7 +44,7 @@ public class MapScreen extends GridLoader {
 			PlayN.json().parse(
 				mapJsonString
 			),
-			"mapProgress"
+			StateJson.STORAGE_KEY_MAP
 		);
 
 		HashMap<Integer, List<Tile>> gridStatusMap = mapJson.getGridStatusMap();
@@ -59,6 +59,8 @@ public class MapScreen extends GridLoader {
 
 		if (completedLevelLocation != null) {
 			mapTileGrid.unlockConnected(completedLevelLocation);
+
+			StateJson.store(gridStatusMap, StateJson.STORAGE_KEY_MAP);
 		}
 	}
 
