@@ -1,28 +1,14 @@
 package com.github.jamescarter.hexahop.core.grid;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
-import playn.core.Json.Array;
 
 public class LevelTileGrid extends TileGrid<Tile> {
-	public LevelTileGrid(Array gridArray) {
-		for (int row=0; row<gridArray.length(); row++) {
-			Array tiles = gridArray.getArray(row);
-
-			List<Tile> baseList = new ArrayList<Tile>();
-			List<Tile> levelTileList = new ArrayList<Tile>();
-
-			baseGridMap.put(row, baseList);
-			gridStatusMap.put(row, levelTileList);
-
-			for (int tile=0; tile<tiles.length(); tile++) {
-				baseList.add(Tile.getTile(tiles.getInt(tile)));
-				levelTileList.add(Tile.getTile(tiles.getInt(tile)));
-			}
-		}
+	public LevelTileGrid(HashMap<Integer, List<Tile>> baseGridMap, HashMap<Integer, List<Tile>> gridStatusMap) {
+		super(baseGridMap, gridStatusMap);
 	}
 
 	/**

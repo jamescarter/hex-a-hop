@@ -3,26 +3,26 @@ package com.github.jamescarter.hexahop.core.screen;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
+import java.util.HashMap;
 import java.util.List;
 
 import playn.core.Color;
 import playn.core.ImageLayer;
-import playn.core.Json.Object;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
 import playn.core.Surface;
 import playn.core.SurfaceLayer;
-
 import com.github.jamescarter.hexahop.core.callback.LevelLoadCallback;
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.MapTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
+import com.github.jamescarter.hexahop.core.json.StateJson;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
 
 public class MapScreen extends GridLoader {
-	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
+	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map_top.png"));
 	private MapTileGrid mapTileGrid;
 
 	public MapScreen() {
@@ -30,17 +30,32 @@ public class MapScreen extends GridLoader {
 	}
 
 	public MapScreen(Location completedLevelLocation) {
-		Object jsonObj;
+		String mapJsonString;
+
 		try {
-			jsonObj = PlayN.json().parse(
-				assets().getTextSync("levels/map.json")
-			);
+			mapJsonString = assets().getTextSync("levels/map.json");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
 
-		mapTileGrid = new MapTileGrid(jsonObj);
+		StateJson<Integer> mapJson = new StateJson<Integer>(
+			Integer.class,
+			PlayN.json().parse(
+				mapJsonString
+			),
+			"mapProgress"
+		);
+
+		HashMap<Integer, List<Tile>> gridStatusMap = mapJson.getGridStatusMap();
+
+		if (!mapJson.hasStatus()) {
+			Location start = mapJson.start();
+
+			gridStatusMap.get(start.row()).set(start.col(), Tile.INCOMPLETE);
+		}
+
+		mapTileGrid = new MapTileGrid(mapJson.getBaseGridMap(), gridStatusMap);
 
 		if (completedLevelLocation != null) {
 			mapTileGrid.unlockConnected(completedLevelLocation);

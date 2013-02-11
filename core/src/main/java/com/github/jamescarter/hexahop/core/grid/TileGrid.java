@@ -2,7 +2,6 @@ package com.github.jamescarter.hexahop.core.grid;
 
 import java.util.HashMap;
 import java.util.List;
-
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
 import com.github.jamescarter.hexahop.core.player.Direction;
@@ -10,6 +9,11 @@ import com.github.jamescarter.hexahop.core.player.Direction;
 public abstract class TileGrid<E> {
 	protected HashMap<Integer, List<E>> baseGridMap = new HashMap<Integer, List<E>>();
 	protected HashMap<Integer, List<Tile>> gridStatusMap = new HashMap<Integer, List<Tile>>();
+
+	public TileGrid(HashMap<Integer, List<E>> baseGridMap, HashMap<Integer, List<Tile>> gridStatusMap) {
+		this.baseGridMap = baseGridMap;
+		this.gridStatusMap = gridStatusMap;
+	}
 
 	public List<Tile> rowTileList(int row) {
 		return gridStatusMap.get(row);

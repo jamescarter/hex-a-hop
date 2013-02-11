@@ -4,17 +4,17 @@ import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
+import com.github.jamescarter.hexahop.core.json.StateJson;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
 import com.github.jamescarter.hexahop.core.screen.MapScreen;
 
-import playn.core.Json.Array;
-import playn.core.Json.Object;
 import playn.core.Keyboard.Event;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
@@ -30,18 +30,29 @@ public class Level extends GridLoader {
 	private int par;
 	private Player player;
 
-	public Level(Location location, String levelJson) {
+	public Level(Location location, String levelJsonString) {
 		this.location = location;
 
-		Object jsonObj = PlayN.json().parse(levelJson);
+		StateJson<Tile> levelJson = new StateJson<Tile>(
+			Tile.class,
+			PlayN.json().parse(levelJsonString),
+			null
+		);
 
-		par = jsonObj.getInt("par");
+		par = levelJson.par();
+		player = new Player(levelJson.start());
 
-		Array start = jsonObj.getArray("start");
+		HashMap<Integer, List<Tile>> gridStatusMap;
 
-		player = new Player(new Location(start.getInt(0), start.getInt(1)));
+		if (levelJson.hasStatus()) {
+			moveList = levelJson.getMoveList();
+			gridStatusMap = levelJson.getGridStatusMap();
+		} else {
+			// if no status was found, set the same as the level
+			gridStatusMap = levelJson.getBaseGridMap();
+		}
 
-		levelTileGrid = new LevelTileGrid(jsonObj.getArray("grid"));
+		levelTileGrid = new LevelTileGrid(levelJson.getBaseGridMap(), gridStatusMap);
 	}
 
 	public int par() {
@@ -53,6 +64,12 @@ public class Level extends GridLoader {
 		super.load();
 
 		getGridLayer().add(player);
+
+		// Center grid layer
+		getGridLayer().setTranslation(
+			((640 - (getTileGrid().cols() * 46)) / 2) - 10,
+			((480 - (getTileGrid().rows() * 36)) / 2) - 36
+		);
 
 		PlayN.pointer().setListener(new Pointer.Adapter() {
 			@Override

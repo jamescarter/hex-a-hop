@@ -23,8 +23,6 @@ public abstract class GridLoader implements Loadable {
 			addTiles(gridLayer, tileList, row, 1); // odd
 		}
 
-		center(gridLayer);
-
 		graphics().rootLayer().clear();
 		graphics().rootLayer().add(getBackgroundLayer());
 		graphics().rootLayer().add(gridLayer);
@@ -44,13 +42,6 @@ public abstract class GridLoader implements Loadable {
 
 	public void add(Layer layer) {
 		gridLayer.add(layer);
-	}
-
-	public void center(GroupLayer levelLayer) {
-		levelLayer.setTranslation(
-			((640 - (getTileGrid().cols() * 46)) / 2) - 10,
-			((480 - (getTileGrid().rows() * 36)) / 2) - 36
-		);
 	}
 
 	public int getColPosition(int col, int offset) {
