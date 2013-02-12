@@ -33,7 +33,9 @@ public class MapTileGrid extends TileGrid<Integer> {
 		setStatusAt(levelLocation, Tile.COMPLETE);
 
 		for (Location location : connectedTo(levelLocation)) {
-			setStatusAt(location, Tile.INCOMPLETE);
+			if (statusAt(location) == null) {
+				setStatusAt(location, Tile.INCOMPLETE);
+			}
 		}
 	}
 }
