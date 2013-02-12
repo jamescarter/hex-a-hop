@@ -58,9 +58,9 @@ public class StateJson<T> {
 					baseValueList.add(null);
 				} else {
 					if (type == Tile.class) {
-						baseValueList.add(type.cast(Tile.getTile(baseValue)));
+						baseValueList.add((T) Tile.getTile(baseValue));
 					} else {
-						baseValueList.add((T) type.cast(baseValue));
+						baseValueList.add((T) baseValue);
 					}
 				}
 

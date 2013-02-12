@@ -109,12 +109,24 @@ public class MapScreen extends GridLoader {
 
 				// Make sure the level is activated before allowing the user to load it
 				if (mapTileGrid.statusAt(new Location(x, y)) != null) {
-					Integer levelId = mapTileGrid.baseTileAt(location);
-
-					assets().getText(String.format("levels/%03d.json", levelId), new LevelLoadCallback(location));
+					assets().getText("levels/" + getLevelName(mapTileGrid.baseTileAt(location)) + ".json", new LevelLoadCallback(location));
 				}
 			}
 		});
+	}
+
+	private String getLevelName(int levelId) {
+		StringBuilder sb = new StringBuilder();
+
+		if (levelId < 10) {
+			sb.append("00");
+		} else if (levelId < 100) {
+			sb.append("0");
+		}
+
+		sb.append(levelId);
+
+		return sb.toString();
 	}
 
 	@Override

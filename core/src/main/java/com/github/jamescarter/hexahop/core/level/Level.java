@@ -36,7 +36,7 @@ public class Level extends GridLoader {
 		StateJson<Tile> levelJson = new StateJson<Tile>(
 			Tile.class,
 			PlayN.json().parse(levelJsonString),
-			null
+			"level-" + location.col() + "x" + location.row() 
 		);
 
 		par = levelJson.par();
