@@ -4,10 +4,10 @@ import static playn.core.PlayN.assets;
 import playn.core.Image;
 
 public enum Tile {
-	NORMAL					(1, 1, 0),
+	NORMAL					(1, 1, 0, false),
 	COLLAPSABLE				(2, 2, 0),
 	COLLAPSE_DOOR			(3, 3, 0),
-	TRAMPOLINE				(4, 4, 0),
+	TRAMPOLINE				(4, 4, 0, false),
 	SPINNER					(5, 5, 0),
 	WALL					(6, 6, 0),
 	COLLAPSABLE2			(7, 7, 0),
@@ -43,11 +43,17 @@ public enum Tile {
 	private int id;
 	private int col;
 	private int row;
+	private boolean breakable;
 
 	private Tile(int id, int col, int row) {
+		this(id, col, row, true);
+	}
+
+	private Tile(int id, int col, int row, boolean breakable) {
 		this.id = id;
 		this.col = col;
 		this.row = row;
+		this.breakable = breakable;
 	}
 
 	private Tile (int id, Tile ... tiles) {
@@ -57,6 +63,10 @@ public enum Tile {
 
 	public int id() {
 		return id;
+	}
+
+	public boolean isBreakable() {
+		return breakable;
 	}
 
 	public Image getImage() {

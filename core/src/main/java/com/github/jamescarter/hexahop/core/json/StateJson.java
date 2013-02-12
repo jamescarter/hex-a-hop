@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
-import com.github.jamescarter.hexahop.core.player.Direction;
-
 import playn.core.Json.Array;
 import playn.core.Json.Object;
 import playn.core.Json.Writer;
@@ -23,6 +21,10 @@ public class StateJson<T> {
 	private Location start;
 
 	public StateJson(Class<T> type, Object baseJsonObj, String storageStatusKey) {
+		this(type, baseJsonObj, storageStatusKey, false);
+	}
+
+	public StateJson(Class<T> type, Object baseJsonObj, String storageStatusKey, boolean cloneBase) {
 		String statusJsonString = PlayN.storage().getItem(storageStatusKey);
 
 		if (statusJsonString == null) {
@@ -65,7 +67,11 @@ public class StateJson<T> {
 				}
 
 				if (statusValueArray == null) {
-					statusValueList.add(null);
+					if (cloneBase) {
+						statusValueList.add((Tile) baseValueList.get(baseValueList.size() - 1));
+					} else {
+						statusValueList.add(null);
+					}
 				} else {
 					statusValueList.add(Tile.getTile(statusValueArray.getInt(i)));
 				}
@@ -96,9 +102,9 @@ public class StateJson<T> {
 		return hasStatus;
 	}
 
-	public List<Direction> getMoveList() {
+	public List<Location> getMoveList() {
 		// TODO:
-		return new ArrayList<Direction>();
+		return new ArrayList<Location>();
 	}
 
 	public static void store(HashMap<Integer, List<Tile>> gridStatusMap, String storageStatusKey) {

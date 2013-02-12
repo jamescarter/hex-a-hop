@@ -4,7 +4,6 @@ import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
@@ -25,7 +24,7 @@ import playn.core.Pointer;
 public class Level extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private Location location;
-	private List<Direction> moveList = new ArrayList<Direction>();
+	private List<Location> moveList = new ArrayList<Location>();
 	private LevelTileGrid levelTileGrid;
 	private int par;
 	private Player player;
@@ -36,23 +35,20 @@ public class Level extends GridLoader {
 		StateJson<Tile> levelJson = new StateJson<Tile>(
 			Tile.class,
 			PlayN.json().parse(levelJsonString),
-			"level-" + location.col() + "x" + location.row() 
+			"level-" + location.col() + "x" + location.row(),
+			true
 		);
 
 		par = levelJson.par();
 		player = new Player(levelJson.start());
 
-		HashMap<Integer, List<Tile>> gridStatusMap;
+		moveList.add(levelJson.start());
 
 		if (levelJson.hasStatus()) {
 			moveList = levelJson.getMoveList();
-			gridStatusMap = levelJson.getGridStatusMap();
-		} else {
-			// if no status was found, set the same as the level
-			gridStatusMap = levelJson.getBaseGridMap();
 		}
 
-		levelTileGrid = new LevelTileGrid(levelJson.getBaseGridMap(), gridStatusMap);
+		levelTileGrid = new LevelTileGrid(levelJson.getBaseGridMap(), levelJson.getGridStatusMap());
 	}
 
 	public int par() {
@@ -120,13 +116,13 @@ public class Level extends GridLoader {
 
 	private void move(Direction direction) {
 		if (levelTileGrid.canMove(player.location(), direction)) {
-			moveList.add(direction);
+			moveList.add(player.location().clone());
 
 			deactivateTile(player.location());
 
-			player.move(direction, false);
+			player.move(direction);
 
-			// TODO: levelTileGrid.activateTile(player.location());
+			activateTile(player.location(), direction);
 
 			if (levelTileGrid.complete()) {
 				new MapScreen(location).load();
@@ -140,13 +136,13 @@ public class Level extends GridLoader {
 	 * @return true if there are more moves to undo, otherwise false.
 	 */
 	private boolean undo() {
-		if (moveList.isEmpty()) {
+		if (moveList.size() <= 1) {
 			return false;
 		}
 
-		Direction direction = moveList.remove(moveList.size() - 1);
+		Location location = moveList.remove(moveList.size() - 1);
 
-		player.move(direction, true);
+		player.jumpTo(location, true);
 
 		restoreTile(player.location());
 
@@ -156,6 +152,16 @@ public class Level extends GridLoader {
 	private void deactivateTile(Location location) {
 		if (levelTileGrid.deactivateTile(player.location())) {
 			getLayer(location).setVisible(false);
+		}
+	}
+
+	private void activateTile(Location location, Direction fromDirection) {
+		Location endLocation = levelTileGrid.activateTile(location, fromDirection);
+
+		if (endLocation != null) {
+			player.jumpTo(endLocation, false);
+
+			activateTile(endLocation, fromDirection);
 		}
 	}
 

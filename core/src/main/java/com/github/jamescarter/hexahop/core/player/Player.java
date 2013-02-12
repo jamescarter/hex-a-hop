@@ -10,8 +10,8 @@ import playn.core.gl.ImageLayerGL;
 
 public class Player extends ImageLayerGL {
 	private static final Image playerImage = assets().getImage("images/player.png");
-	private Direction currentDirection = Direction.SOUTH;
-	private Position currentPosition = Position.STANDING;
+	private Direction direction = Direction.SOUTH;
+	private Position position = Position.STANDING;
 	private Location location;
 
 	public Player(Location location) {
@@ -28,7 +28,7 @@ public class Player extends ImageLayerGL {
 	}
 
 	private void setImage() {
-		setImage(playerImage.subImage(currentDirection.x(), currentPosition.y(), 65, 80));
+		setImage(playerImage.subImage(direction.x(), position.y(), 65, 80));
 	}
 
 	private void setPosition() {
@@ -43,7 +43,7 @@ public class Player extends ImageLayerGL {
 		if (location.col() % 2 == 0) {
 			return (location.row() * 36) - 18;
 		} else {
-			return (location.row() * 36);	
+			return (location.row() * 36);
 		}
 	}
 
@@ -79,14 +79,20 @@ public class Player extends ImageLayerGL {
 		}
 	}
 
-	public void move(Direction direction, boolean isUndo) {
-		this.currentDirection = direction;
-
-		if (isUndo) {
-			direction = direction.opposite();
-		}
+	public void move(Direction direction) {
+		this.direction = direction;
 
 		location.move(direction);
+
+		jumpTo(location, false);
+	}
+
+	public void jumpTo(Location newLocation, boolean isUndo) {
+		if (isUndo) {
+			//TODO: work out the direction the player should be facing
+		}
+
+		this.location = newLocation;
 
 		setImage();
 		setPosition();

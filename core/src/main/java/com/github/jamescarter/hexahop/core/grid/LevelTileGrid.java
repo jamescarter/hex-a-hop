@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
+import com.github.jamescarter.hexahop.core.player.Direction;
 
 public class LevelTileGrid extends TileGrid<Tile> {
 	public LevelTileGrid(HashMap<Integer, List<Tile>> baseGridMap, HashMap<Integer, List<Tile>> gridStatusMap) {
@@ -18,14 +19,26 @@ public class LevelTileGrid extends TileGrid<Tile> {
 	 * @return returns true if the tile was deactivate, otherwise false
 	 */
 	public boolean deactivateTile(Location location) {
-		List<Tile> tileList = rowTileList(location.row());
+		if (statusAt(location).isBreakable()) {
+			setStatusAt(location, null);
 
-		if (tileList.get(location.col()) != Tile.NORMAL) {
-			tileList.set(location.col(), null);
 			return true;
 		}
 
 		return false;
+	}
+
+	public Location activateTile(Location location, Direction fromDirection) {
+		switch (statusAt(location)) {
+			case TRAMPOLINE:
+				location.move(fromDirection);
+				location.move(fromDirection);
+
+				return location;
+			default:
+		}
+
+		return null;
 	}
 
 	public void restoreTile(Location location) {
