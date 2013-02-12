@@ -27,6 +27,8 @@ public class StateJson<T> {
 
 		if (statusJsonString == null) {
 			statusJsonString = "{}";
+		} else {
+			hasStatus = true;
 		}
 
 		Object statusJsonObj = PlayN.json().parse(statusJsonString);
@@ -56,7 +58,7 @@ public class StateJson<T> {
 					baseValueList.add(null);
 				} else {
 					if (type == Tile.class) {
-						baseValueList.add((T) Tile.getTile(baseValue));
+						baseValueList.add(type.cast(Tile.getTile(baseValue)));
 					} else {
 						baseValueList.add((T) type.cast(baseValue));
 					}

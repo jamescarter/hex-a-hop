@@ -18,7 +18,7 @@ public class LevelTileGrid extends TileGrid<Tile> {
 	 * @return returns true if the tile was deactivate, otherwise false
 	 */
 	public boolean deactivateTile(Location location) {
-		List<Tile> tileList = gridStatusMap.get(location.row());
+		List<Tile> tileList = rowTileList(location.row());
 
 		if (tileList.get(location.col()) != Tile.NORMAL) {
 			tileList.set(location.col(), null);
@@ -33,8 +33,8 @@ public class LevelTileGrid extends TileGrid<Tile> {
 	}
 
 	public boolean complete() {
-		for (int row=0; row<gridStatusMap.size(); row++) {
-			for (Tile tile : gridStatusMap.get(row)) {
+		for (int row=0; row<rows(); row++) {
+			for (Tile tile : rowTileList(row)) {
 				if (tile == Tile.COLLAPSABLE || tile == Tile.COLLAPSABLE2) {
 					return false;
 				}

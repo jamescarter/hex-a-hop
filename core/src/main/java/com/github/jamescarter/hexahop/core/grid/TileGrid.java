@@ -6,11 +6,11 @@ import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.level.Tile;
 import com.github.jamescarter.hexahop.core.player.Direction;
 
-public abstract class TileGrid<E> {
-	protected HashMap<Integer, List<E>> baseGridMap = new HashMap<Integer, List<E>>();
-	protected HashMap<Integer, List<Tile>> gridStatusMap = new HashMap<Integer, List<Tile>>();
+public abstract class TileGrid<T> {
+	private HashMap<Integer, List<T>> baseGridMap = new HashMap<Integer, List<T>>();
+	private HashMap<Integer, List<Tile>> gridStatusMap = new HashMap<Integer, List<Tile>>();
 
-	public TileGrid(HashMap<Integer, List<E>> baseGridMap, HashMap<Integer, List<Tile>> gridStatusMap) {
+	public TileGrid(HashMap<Integer, List<T>> baseGridMap, HashMap<Integer, List<Tile>> gridStatusMap) {
 		this.baseGridMap = baseGridMap;
 		this.gridStatusMap = gridStatusMap;
 	}
@@ -27,18 +27,18 @@ public abstract class TileGrid<E> {
 		return gridStatusMap.get(0).size();
 	}
 
-	public E baseTileAt(Location location) {
+	public T baseTileAt(Location location) {
 		if (location.row() >= baseGridMap.size() || location.row() < 0) {
 			return null;
 		}
 
-		List<E> baseTileList = baseGridMap.get(location.row());
+		List<T> baseTileList = baseGridMap.get(location.row());
 
 		if (location.col() >= baseTileList.size() || location.col() < 0) {
 			return null;
 		}
 
-		return baseGridMap.get(location.row()).get(location.col());
+		return baseTileList.get(location.col());
 	}
 
 	public Tile statusAt(Location location) {
