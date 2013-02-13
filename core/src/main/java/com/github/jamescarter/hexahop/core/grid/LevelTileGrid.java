@@ -55,15 +55,15 @@ public class LevelTileGrid extends TileGrid<Tile> {
 		setStatusAt(location, baseTileAt(location));
 	}
 
-	public boolean complete() {
+	public boolean contains(Tile findTile) {
 		for (int row=0; row<rows(); row++) {
 			for (Tile tile : rowTileList(row)) {
-				if (tile == Tile.COLLAPSABLE || tile == Tile.COLLAPSABLE2) {
-					return false;
+				if (tile == findTile) {
+					return true;
 				}
 			}
 		}
 
-		return true;
+		return false;
 	}
 }

@@ -6,7 +6,7 @@ import playn.core.Image;
 public enum Tile {
 	NORMAL					(1, 1, 0, false, false),
 	COLLAPSABLE				(2, 2, 0),
-	COLLAPSE_DOOR			(3, 3, 0),
+	COLLAPSE_DOOR			(3, 3, 0, true, true),
 	TRAMPOLINE				(4, 4, 0, false, false),
 	SPINNER					(5, 5, 0),
 	WALL					(6, 6, 0, false, true),

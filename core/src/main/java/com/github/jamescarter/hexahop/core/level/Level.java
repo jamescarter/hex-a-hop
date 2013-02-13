@@ -23,14 +23,14 @@ import playn.core.Pointer;
 
 public class Level extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
-	private Location location;
+	private Location levelLocation;
 	private List<Location> moveList = new ArrayList<Location>();
 	private LevelTileGrid levelTileGrid;
 	private int par;
 	private Player player;
 
 	public Level(Location location, String levelJsonString) {
-		this.location = location;
+		this.levelLocation = location;
 
 		StateJson<Tile> levelJson = new StateJson<Tile>(
 			Tile.class,
@@ -123,10 +123,6 @@ public class Level extends GridLoader {
 			player.move(direction);
 
 			activateTile(player.location(), direction);
-
-			if (levelTileGrid.complete()) {
-				new MapScreen(location).load();
-			}
 		}
 	}
 
@@ -152,6 +148,16 @@ public class Level extends GridLoader {
 	private void deactivateTile(Location location) {
 		if (levelTileGrid.deactivateTile(player.location())) {
 			getLayer(location).setVisible(false);
+
+			// check if all the green tiles have been destroyed
+			if (!levelTileGrid.contains(Tile.COLLAPSABLE)) {
+				// if any door tiles exist, convert them to collapsable
+				if (levelTileGrid.contains(Tile.COLLAPSE_DOOR)) {
+					replace(Tile.COLLAPSE_DOOR, Tile.COLLAPSABLE);
+				} else {
+					new MapScreen(levelLocation).load();
+				}
+			}
 		}
 	}
 
@@ -171,7 +177,25 @@ public class Level extends GridLoader {
 		levelTileGrid.restoreTile(player.location());
 	}
 
-	private Layer getLayer(Location location) {
+	private void replace(Tile findTile, Tile replaceTile) {
+		for (int row=0; row<levelTileGrid.rows(); row++) {
+			List<Tile> tileList = levelTileGrid.rowTileList(row);
+
+			for (int col=0; col<tileList.size(); col++) {
+				Tile tile = tileList.get(col);
+
+				if (tile == findTile) {
+					Location location = new Location(col, row);
+
+					levelTileGrid.setStatusAt(location, replaceTile);
+
+					getLayer(location).setImage(replaceTile.getImage());
+				}
+			}
+		}
+	}
+
+	private ImageLayer getLayer(Location location) {
 		int colPosition = getColPosition(location.col(), 0);
 		int rowPosition = getRowPosition(location.row(), location.col(), 0);
 
@@ -180,7 +204,7 @@ public class Level extends GridLoader {
 
 			if (layer instanceof ImageLayer) {
 				if (layer.tx() == colPosition && layer.ty() == rowPosition) {
-					return layer;
+					return (ImageLayer) layer;
 				}
 			}
 		}
