@@ -60,7 +60,10 @@ public abstract class TileGrid<T> {
 
 		newLocation.move(inDirection);
 
-		if (statusAt(newLocation) != null) {
+		Tile currentStatusTile = statusAt(fromLocation);
+		Tile toStatusTile = statusAt(newLocation);
+
+		if (toStatusTile != null && (currentStatusTile == null || toStatusTile.isTall() == currentStatusTile.isTall())) {
 			return true;
 		}
 

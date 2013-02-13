@@ -31,8 +31,18 @@ public class LevelTileGrid extends TileGrid<Tile> {
 	public Location activateTile(Location location, Direction fromDirection) {
 		switch (statusAt(location)) {
 			case TRAMPOLINE:
-				location.move(fromDirection);
-				location.move(fromDirection);
+				for (int i=0; i<2; i++) {
+					Location newLocation = location.clone();
+					newLocation.move(fromDirection);
+
+					if (canMove(location, fromDirection) || statusAt(newLocation) == null) {
+						location.move(fromDirection);
+					} else if (i == 0) {
+						return null;
+					} else {
+						break;
+					}
+				}
 
 				return location;
 			default:
