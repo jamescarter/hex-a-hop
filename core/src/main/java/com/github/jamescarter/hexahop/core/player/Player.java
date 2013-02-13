@@ -89,7 +89,7 @@ public class Player extends ImageLayerGL {
 
 	public void jumpTo(Location newLocation, boolean isUndo) {
 		if (isUndo) {
-			//TODO: work out the direction the player should be facing
+			direction = newLocation.to(location);
 		}
 
 		this.location = newLocation;

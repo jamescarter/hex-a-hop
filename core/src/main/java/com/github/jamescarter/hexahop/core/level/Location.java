@@ -58,6 +58,34 @@ public class Location {
 		}
 	}
 
+	public Direction to(Location to) {
+		int toRow = to.row();
+
+		if (to.col() % 2 == 0) {
+			--toRow;
+		}
+
+		if (col == to.col()) {
+			if (row > to.row()) {
+				return Direction.NORTH;
+			} else {
+				return Direction.SOUTH;
+			}
+		} else if (row > toRow) {
+			if (col > to.col()) {
+				return Direction.NORTH_WEST;
+			} else {
+				return Direction.NORTH_EAST;
+			}
+		} else {
+			if (col > to.col()) {
+				return Direction.SOUTH_WEST;
+			} else {
+				return Direction.SOUTH_EAST;
+			}
+		}
+	}
+
 	public Location clone() {
 		return new Location(col, row);
 	}
