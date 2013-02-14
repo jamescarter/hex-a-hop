@@ -149,13 +149,28 @@ public class Level extends GridLoader {
 		if (levelTileGrid.deactivateTile(player.location())) {
 			getLayer(location).setVisible(false);
 
-			// check if all the green tiles have been destroyed
+			// check if all the collapsable tiles have been destroyed
 			if (!levelTileGrid.contains(Tile.COLLAPSABLE)) {
-				// if any door tiles exist, convert them to collapsable
+				// if any door tiles exist, convert to collapsable
 				if (levelTileGrid.contains(Tile.COLLAPSE_DOOR)) {
 					replace(Tile.COLLAPSE_DOOR, Tile.COLLAPSABLE);
 				} else {
 					new MapScreen(levelLocation).load();
+				}
+			}
+		} else {
+			switch(levelTileGrid.statusAt(location)) {
+				case COLLAPSABLE2:
+					setTileAt(location, Tile.COLLAPSABLE);
+				break;
+				default:
+			}
+
+			// check if all collapsable2 tiles have been destoyed
+			if (!levelTileGrid.contains(Tile.COLLAPSABLE2)) {
+				// if any door tiles exist, convert to collapsable2
+				if (levelTileGrid.contains(Tile.COLLAPSE_DOOR2)) {
+					replace(Tile.COLLAPSE_DOOR2, Tile.COLLAPSABLE2);
 				}
 			}
 		}
@@ -185,14 +200,19 @@ public class Level extends GridLoader {
 				Tile tile = tileList.get(col);
 
 				if (tile == findTile) {
-					Location location = new Location(col, row);
-
-					levelTileGrid.setStatusAt(location, replaceTile);
-
-					getLayer(location).setImage(replaceTile.getImage());
+					setTileAt(
+						new Location(col, row),
+						replaceTile
+					);
 				}
 			}
 		}
+	}
+
+	private void setTileAt(Location location, Tile tile) {
+		levelTileGrid.setStatusAt(location, tile);
+
+		getLayer(location).setImage(tile.getImage());
 	}
 
 	private ImageLayer getLayer(Location location) {

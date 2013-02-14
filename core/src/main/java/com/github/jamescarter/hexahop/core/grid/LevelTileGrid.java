@@ -28,15 +28,22 @@ public class LevelTileGrid extends TileGrid<Tile> {
 		return false;
 	}
 
-	public Location activateTile(Location location, Direction fromDirection) {
+	/**
+	 * Activate the tile the user landed on.
+	 * 
+	 * @param location Tile location to activate
+	 * @param direction Direction user is heading
+	 * @return the location the user was pushed to
+	 */
+	public Location activateTile(Location location, Direction direction) {
 		switch (statusAt(location)) {
 			case TRAMPOLINE:
 				for (int i=0; i<2; i++) {
 					Location newLocation = location.clone();
-					newLocation.move(fromDirection);
+					newLocation.move(direction);
 
-					if (canMove(location, fromDirection) || statusAt(newLocation) == null) {
-						location.move(fromDirection);
+					if (canMove(location, direction) || statusAt(newLocation) == null) {
+						location.move(direction);
 					} else if (i == 0) {
 						return null;
 					} else {
@@ -51,16 +58,19 @@ public class LevelTileGrid extends TileGrid<Tile> {
 		return null;
 	}
 
+	/**
+	 * Restore tile to its previous state when the level started.
+	 * 
+	 * @param location
+	 */
 	public void restoreTile(Location location) {
 		setStatusAt(location, baseTileAt(location));
 	}
 
 	public boolean contains(Tile findTile) {
 		for (int row=0; row<rows(); row++) {
-			for (Tile tile : rowTileList(row)) {
-				if (tile == findTile) {
-					return true;
-				}
+			if (rowTileList(row).contains(findTile)) {
+				return true;
 			}
 		}
 
