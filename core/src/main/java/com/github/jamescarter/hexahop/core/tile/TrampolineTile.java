@@ -25,7 +25,9 @@ public class TrampolineTile extends Tile {
 			Tile statusTile = tileGrid.statusAt(newLocation);
 
 			if (tileGrid.canMove(location, direction) || statusTile == null || !statusTile.isActive()) {
-				location.move(direction);
+				if (!(statusTile != null && statusTile.isWall())) {
+					location.move(direction);
+				}
 			} else if (i == 0) {
 				return null;
 			}
