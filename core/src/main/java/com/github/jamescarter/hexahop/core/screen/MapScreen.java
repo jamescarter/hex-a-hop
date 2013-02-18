@@ -25,20 +25,11 @@ public class MapScreen extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map_top.png"));
 	private MapTileGrid mapTileGrid = new MapTileGrid();
 
-	public MapScreen() {
-		this(null);
+	public MapScreen(String mapJsonString) {
+		this(null, mapJsonString);
 	}
 
-	public MapScreen(Location completedLevelLocation) {
-		String mapJsonString;
-
-		try {
-			mapJsonString = assets().getTextSync("levels/map.json");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-
+	public MapScreen(Location completedLevelLocation, String mapJsonString) {
 		StateJson<Integer> mapJson = new StateJson<Integer>(
 			Integer.class,
 			mapTileGrid,

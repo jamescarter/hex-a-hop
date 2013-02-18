@@ -6,13 +6,13 @@ import static playn.core.PlayN.graphics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.jamescarter.hexahop.core.callback.MapLoadCallback;
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.json.StateJson;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
-import com.github.jamescarter.hexahop.core.screen.MapScreen;
 import com.github.jamescarter.hexahop.core.tile.Tile;
 
 import playn.core.Keyboard.Event;
@@ -188,7 +188,7 @@ public class Level extends GridLoader {
 	}
 
 	public void complete() {
-		new MapScreen(levelLocation).load();
+		assets().getText("levels/map.json", new MapLoadCallback(levelLocation));
 	}
 
 	@Override

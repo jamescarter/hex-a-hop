@@ -14,6 +14,7 @@ import playn.core.TextFormat;
 import playn.core.TextLayout;
 
 import com.github.jamescarter.hexahop.core.Loadable;
+import com.github.jamescarter.hexahop.core.callback.MapLoadCallback;
 
 public class TitleScreen implements Loadable {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
@@ -47,7 +48,7 @@ public class TitleScreen implements Loadable {
 		newGameLayer.addListener(new Pointer.Adapter() {
 			@Override
 			public void onPointerEnd(Pointer.Event event) {
-				new MapScreen().load();
+				assets().getText("levels/map.json", new MapLoadCallback(null));
 			}
 		});
 

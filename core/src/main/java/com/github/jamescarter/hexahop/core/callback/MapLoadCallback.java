@@ -1,20 +1,20 @@
 package com.github.jamescarter.hexahop.core.callback;
 
-import com.github.jamescarter.hexahop.core.level.Level;
 import com.github.jamescarter.hexahop.core.level.Location;
+import com.github.jamescarter.hexahop.core.screen.MapScreen;
 
 import playn.core.util.Callback;
 
-public class LevelLoadCallback implements Callback<String> {
+public class MapLoadCallback implements Callback<String> {
 	private Location location;
 
-	public LevelLoadCallback(Location location) {
+	public MapLoadCallback(Location location) {
 		this.location = location;
 	}
 
 	@Override
 	public void onSuccess(String json) {
-		new Level(location, json).load();
+		new MapScreen(location, json).load();
 	}
 
 	@Override
