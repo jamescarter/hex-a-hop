@@ -104,7 +104,6 @@ public class StateJson<T> {
 				if (tile == null) {
 					rowWriter.value(0);
 				} else {
-					System.out.println("Writing: " + tile.id());
 					rowWriter.value(tile.id());
 				}
 			}

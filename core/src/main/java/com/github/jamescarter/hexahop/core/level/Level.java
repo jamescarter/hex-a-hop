@@ -19,8 +19,10 @@ import playn.core.Keyboard.Event;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
 import playn.core.Layer;
+import playn.core.Mouse;
+import playn.core.Mouse.ButtonEvent;
 import playn.core.PlayN;
-import playn.core.Pointer;
+import playn.core.Touch;
 
 public class Level extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
@@ -62,14 +64,32 @@ public class Level extends GridLoader {
 			((480 - (getTileGrid().rows() * 36)) / 2) - 36
 		);
 
-		PlayN.pointer().setListener(new Pointer.Adapter() {
+		bgLayer.addListener(new Mouse.LayerAdapter() {
 			@Override
-			public void onPointerStart(Pointer.Event event) {
+			public void onMouseDown(ButtonEvent event) {
 				Location location = getGridLocation(event.x(), event.y());
 
 				Direction direction = player.location().to(location);
 
 				move(direction);
+			}
+		});
+
+		bgLayer.addListener(new Touch.LayerAdapter() {
+			private Touch.Event touchStart;
+
+			@Override
+			public void onTouchStart(Touch.Event touch) {
+				touchStart = touch;
+			}
+
+			@Override
+			public void onTouchEnd(Touch.Event touchEnd) {
+				move(
+					getGridLocation(touchStart.x(), touchStart.y()).to(
+						getGridLocation(touchEnd.x(), touchEnd.y())
+					)
+				);
 			}
 		});
 

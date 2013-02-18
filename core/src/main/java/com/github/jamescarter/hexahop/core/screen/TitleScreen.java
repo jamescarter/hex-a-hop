@@ -8,6 +8,7 @@ import playn.core.Font;
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.Layer;
+import playn.core.PlayN;
 import playn.core.Pointer;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
@@ -20,6 +21,8 @@ public class TitleScreen implements Loadable {
 
 	@Override
 	public void load() {
+		PlayN.keyboard().setListener(null);
+
 		GroupLayer rootLayer = graphics().rootLayer();
 		GroupLayer titleMenuLayer = graphics().createGroupLayer();
 

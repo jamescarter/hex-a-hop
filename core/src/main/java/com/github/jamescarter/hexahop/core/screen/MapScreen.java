@@ -63,6 +63,8 @@ public class MapScreen extends GridLoader {
 
 	@Override
 	public void load() {
+		PlayN.keyboard().setListener(null);
+
 		SurfaceLayer lineLayer = graphics().createSurfaceLayer(1000, 480);
 		Surface surface = lineLayer.surface();
 		surface.setFillColor(Color.rgb(39, 23, 107));
@@ -96,7 +98,7 @@ public class MapScreen extends GridLoader {
 
 		super.load();
 
-		PlayN.pointer().setListener(new Pointer.Adapter() {
+		bgLayer.addListener(new Pointer.Adapter() {
 			@Override
 			public void onPointerStart(Pointer.Event event) {
 				Location location = getGridLocation(event.x(), event.y());
