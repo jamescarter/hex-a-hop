@@ -117,6 +117,10 @@ public abstract class Tile extends ImageLayerGL {
 				return new TrampolineTile(tileGrid, location);
 			case 6:
 				return new StoneTile(location, true);
+			case 7:
+				return new Collapsable2Tile(tileGrid, location, false);
+			case 8:
+				return new Collapsable2Tile(tileGrid, location, true);
 			case 80:
 			case 81:
 			case 82:

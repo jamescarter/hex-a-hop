@@ -88,13 +88,20 @@ public class CollapsableTile extends Tile {
 	private boolean containsBreakable(boolean isWall) {
 		for (int row=0; row<tileGrid.rows(); row++) {
 			for (Tile tile : tileGrid.rowTileList(row)) {
-				if (tile != null && (tile.isWall() == isWall && tile.isActive() && tile instanceof CollapsableTile)) {
-					return true;
+				if (tile != null && (tile.isWall() == isWall && tile.isActive())) {
+					if (tile instanceof CollapsableTile) {
+						return true;
+					} else if (tile instanceof Collapsable2Tile) {
+						Collapsable2Tile tile2 = (Collapsable2Tile) tile;
+
+						if (tile2.isBreakable()) {
+							return true;
+						}
+					}
 				}
 			}
 		}
 
 		return false;
 	}
-
 }
