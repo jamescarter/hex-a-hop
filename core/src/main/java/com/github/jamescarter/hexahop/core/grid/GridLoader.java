@@ -5,6 +5,7 @@ import static playn.core.PlayN.graphics;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.Loadable;
+import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.tile.Tile;
 
 import playn.core.GroupLayer;
@@ -52,6 +53,18 @@ public abstract class GridLoader implements Loadable {
 		} else {
 			return (row * 36) + 18 + offset;	
 		}
+	}
+
+	public Location getGridLocation(float x, float y) {
+		// Offset clicked location based on where the levelLayer is centered
+		int col = (int) ((x - getGridLayer().tx()) / 48);
+		int row = (int) ((y - getGridLayer().ty()) / 38);
+
+		if (col % 2 != 0) {
+			row--;
+		}
+
+		return new Location(col, row);
 	}
 
 	public GroupLayer getGridLayer() {

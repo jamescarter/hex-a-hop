@@ -99,13 +99,10 @@ public class MapScreen extends GridLoader {
 		PlayN.pointer().setListener(new Pointer.Adapter() {
 			@Override
 			public void onPointerStart(Pointer.Event event) {
-				int x = (int) ((event.x() - getGridLayer().tx()) / 64);
-				int y = (int) ((event.y() - getGridLayer().ty()) / 64);
-
-				Location location = new Location(x, y);
+				Location location = getGridLocation(event.x(), event.y());
 
 				// Make sure the level is activated before allowing the user to load it
-				if (mapTileGrid.statusAt(new Location(x, y)) != null) {
+				if (mapTileGrid.statusAt(location) != null) {
 					assets().getText("levels/" + getLevelName(mapTileGrid.baseTileAt(location)) + ".json", new LevelLoadCallback(location));
 				}
 			}

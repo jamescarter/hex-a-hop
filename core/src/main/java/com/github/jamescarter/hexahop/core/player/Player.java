@@ -47,38 +47,6 @@ public class Player extends ImageLayerGL {
 		}
 	}
 
-	public Direction getDirection(float selectedX, float selectedY) {
-		// modify player co-ordinates to center of player image
-		float playerX = tx() + 30;
-		float playerY = ty() + 42;
-
-		boolean isNorthOrSouthOnly = (Math.abs(selectedX - playerX) < 25) ? true : false;
-		boolean isNorth = (selectedY < playerY) ? true : false;
-		boolean isEast = (selectedX > playerX) ? true : false;
-
-		if (isNorthOrSouthOnly) {
-			if (isNorth) {
-				return Direction.NORTH;
-			} else {
-				return Direction.SOUTH;
-			}
-		} else {
-			if (isNorth) {
-				if (isEast) {
-					return Direction.NORTH_EAST;
-				} else {
-					return Direction.NORTH_WEST;
-				}
-			} else {
-				if (isEast) {
-					return Direction.SOUTH_EAST;
-				} else {
-					return Direction.SOUTH_WEST;
-				}
-			}
-		}
-	}
-
 	public void move(Direction direction) {
 		this.direction = direction;
 

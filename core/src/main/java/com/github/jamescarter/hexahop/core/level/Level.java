@@ -65,11 +65,9 @@ public class Level extends GridLoader {
 		PlayN.pointer().setListener(new Pointer.Adapter() {
 			@Override
 			public void onPointerStart(Pointer.Event event) {
-				// Offset clicked location based on where the levelLayer is centered
-				Direction direction = player.getDirection(
-					event.x() - getGridLayer().tx(),
-					event.y() - getGridLayer().ty()
-				);
+				Location location = getGridLocation(event.x(), event.y());
+
+				Direction direction = player.location().to(location);
 
 				move(direction);
 			}
