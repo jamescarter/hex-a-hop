@@ -3,7 +3,6 @@ package com.github.jamescarter.hexahop.core.screen;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
-import java.util.HashMap;
 import java.util.List;
 
 import playn.core.Color;
@@ -19,11 +18,12 @@ import com.github.jamescarter.hexahop.core.grid.MapTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.json.StateJson;
 import com.github.jamescarter.hexahop.core.level.Location;
-import com.github.jamescarter.hexahop.core.level.Tile;
+import com.github.jamescarter.hexahop.core.tile.MapStatusTile;
+import com.github.jamescarter.hexahop.core.tile.Tile;
 
 public class MapScreen extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map_top.png"));
-	private MapTileGrid mapTileGrid;
+	private MapTileGrid mapTileGrid = new MapTileGrid();
 
 	public MapScreen() {
 		this(null);
@@ -41,26 +41,23 @@ public class MapScreen extends GridLoader {
 
 		StateJson<Integer> mapJson = new StateJson<Integer>(
 			Integer.class,
+			mapTileGrid,
 			PlayN.json().parse(
 				mapJsonString
 			),
 			StateJson.STORAGE_KEY_MAP
 		);
 
-		HashMap<Integer, List<Tile>> gridStatusMap = mapJson.getGridStatusMap();
-
 		if (!mapJson.hasStatus()) {
 			Location start = mapJson.start();
 
-			gridStatusMap.get(start.row()).set(start.col(), Tile.INCOMPLETE);
+			mapTileGrid.setStatusAt(start, new MapStatusTile(start));
 		}
-
-		mapTileGrid = new MapTileGrid(mapJson.getBaseGridMap(), gridStatusMap);
 
 		if (completedLevelLocation != null) {
 			mapTileGrid.unlockConnected(completedLevelLocation);
 
-			StateJson.store(gridStatusMap, StateJson.STORAGE_KEY_MAP);
+			StateJson.store(mapTileGrid, StateJson.STORAGE_KEY_MAP);
 		}
 	}
 

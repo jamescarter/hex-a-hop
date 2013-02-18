@@ -5,9 +5,9 @@ import static playn.core.PlayN.graphics;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.Loadable;
-import com.github.jamescarter.hexahop.core.level.Tile;
+import com.github.jamescarter.hexahop.core.tile.Tile;
+
 import playn.core.GroupLayer;
-import playn.core.ImageLayer;
 import playn.core.Layer;
 
 public abstract class GridLoader implements Loadable {
@@ -33,9 +33,7 @@ public abstract class GridLoader implements Loadable {
 			Tile tile = tileList.get(col);
 
 			if (tile != null) {
-				ImageLayer imageLayer = graphics().createImageLayer(tile.getImage());
-
-				levelLayer.addAt(imageLayer, getColPosition(col, 0), getRowPosition(row, col, 0));
+				levelLayer.addAt(tile, getColPosition(col, 0), getRowPosition(row, col, 0));
 			}
 		}
 	}

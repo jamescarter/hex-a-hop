@@ -13,6 +13,7 @@ import com.github.jamescarter.hexahop.core.json.StateJson;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
 import com.github.jamescarter.hexahop.core.screen.MapScreen;
+import com.github.jamescarter.hexahop.core.tile.Tile;
 
 import playn.core.Keyboard.Event;
 import playn.core.ImageLayer;
@@ -25,7 +26,7 @@ public class Level extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private Location levelLocation;
 	private List<Location> moveList = new ArrayList<Location>();
-	private LevelTileGrid levelTileGrid;
+	private LevelTileGrid levelTileGrid = new LevelTileGrid(this);
 	private int par;
 	private Player player;
 
@@ -34,6 +35,7 @@ public class Level extends GridLoader {
 
 		StateJson<Tile> levelJson = new StateJson<Tile>(
 			Tile.class,
+			levelTileGrid,
 			PlayN.json().parse(levelJsonString),
 			"level-" + location.col() + "x" + location.row(),
 			true
@@ -41,14 +43,7 @@ public class Level extends GridLoader {
 
 		par = levelJson.par();
 		player = new Player(levelJson.start());
-
 		moveList.add(levelJson.start());
-
-		if (levelJson.hasStatus()) {
-			moveList = levelJson.getMoveList();
-		}
-
-		levelTileGrid = new LevelTileGrid(levelJson.getBaseGridMap(), levelJson.getGridStatusMap());
 	}
 
 	public int par() {
@@ -118,11 +113,11 @@ public class Level extends GridLoader {
 		if (levelTileGrid.canMove(player.location(), direction)) {
 			moveList.add(player.location().clone());
 
-			deactivateTile(player.location());
+			levelTileGrid.statusAt(player.location()).stepOff();
 
 			player.move(direction);
 
-			activateTile(player.location(), direction);
+			stepOnTile(player.location(), direction);
 		}
 	}
 
@@ -138,98 +133,44 @@ public class Level extends GridLoader {
 
 		Location location = moveList.remove(moveList.size() - 1);
 
+		getTile(player.location()).undo();
+
 		player.jumpTo(location, true);
 
-		restoreTile(player.location());
+		getTile(player.location()).undo();
 
 		return true;
 	}
 
-	private void deactivateTile(Location location) {
-		if (levelTileGrid.deactivateTile(player.location())) {
-			getLayer(location).setVisible(false);
-
-			// check if all the collapsable tiles have been destroyed
-			if (!levelTileGrid.contains(Tile.COLLAPSABLE)) {
-				// if any door tiles exist, convert to collapsable
-				if (levelTileGrid.contains(Tile.COLLAPSE_DOOR)) {
-					replace(Tile.COLLAPSE_DOOR, Tile.COLLAPSABLE);
-				} else {
-					new MapScreen(levelLocation).load();
-				}
-			}
-		} else {
-			switch(levelTileGrid.statusAt(location)) {
-				case COLLAPSABLE2:
-					setTileAt(location, Tile.COLLAPSABLE);
-				break;
-				default:
-			}
-
-			// check if all collapsable2 tiles have been destoyed
-			if (!levelTileGrid.contains(Tile.COLLAPSABLE2)) {
-				// if any door tiles exist, convert to collapsable2
-				if (levelTileGrid.contains(Tile.COLLAPSE_DOOR2)) {
-					replace(Tile.COLLAPSE_DOOR2, Tile.COLLAPSABLE2);
-				}
-			}
-		}
-	}
-
-	private void activateTile(Location location, Direction fromDirection) {
-		Location endLocation = levelTileGrid.activateTile(location, fromDirection);
+	private void stepOnTile(Location location, Direction direction) {
+		Location endLocation = levelTileGrid.statusAt(location).stepOn(direction);
 
 		if (endLocation != null) {
 			player.jumpTo(endLocation, false);
 
-			activateTile(endLocation, fromDirection);
+			stepOnTile(endLocation, direction);
 		}
 	}
 
-	private void restoreTile(Location location) {
-		getLayer(location).setVisible(true);
-
-		levelTileGrid.restoreTile(player.location());
-	}
-
-	private void replace(Tile findTile, Tile replaceTile) {
-		for (int row=0; row<levelTileGrid.rows(); row++) {
-			List<Tile> tileList = levelTileGrid.rowTileList(row);
-
-			for (int col=0; col<tileList.size(); col++) {
-				Tile tile = tileList.get(col);
-
-				if (tile == findTile) {
-					setTileAt(
-						new Location(col, row),
-						replaceTile
-					);
-				}
-			}
-		}
-	}
-
-	private void setTileAt(Location location, Tile tile) {
-		levelTileGrid.setStatusAt(location, tile);
-
-		getLayer(location).setImage(tile.getImage());
-	}
-
-	private ImageLayer getLayer(Location location) {
+	private Tile getTile(Location location) {
 		int colPosition = getColPosition(location.col(), 0);
 		int rowPosition = getRowPosition(location.row(), location.col(), 0);
 
 		for (int i=0; i<getGridLayer().size(); i++) {
 			Layer layer = getGridLayer().get(i);
 
-			if (layer instanceof ImageLayer) {
+			if (layer instanceof Tile) {
 				if (layer.tx() == colPosition && layer.ty() == rowPosition) {
-					return (ImageLayer) layer;
+					return (Tile) layer;
 				}
 			}
 		}
 
 		return null;
+	}
+
+	public void complete() {
+		new MapScreen(levelLocation).load();
 	}
 
 	@Override

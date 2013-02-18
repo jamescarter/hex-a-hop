@@ -1,11 +1,12 @@
 package com.github.jamescarter.hexahop.core.json;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.level.Location;
-import com.github.jamescarter.hexahop.core.level.Tile;
+import com.github.jamescarter.hexahop.core.tile.Tile;
+
 import playn.core.Json.Array;
 import playn.core.Json.Object;
 import playn.core.Json.Writer;
@@ -13,18 +14,15 @@ import playn.core.PlayN;
 
 public class StateJson<T> {
 	public static final String STORAGE_KEY_MAP = "mapProgress";
-
-	private HashMap<Integer, List<T>> baseGridMap = new HashMap<Integer, List<T>>();
-	private HashMap<Integer, List<Tile>> gridStatusMap = new HashMap<Integer, List<Tile>>();
 	private boolean hasStatus = false;
 	private int par;
 	private Location start;
 
-	public StateJson(Class<T> type, Object baseJsonObj, String storageStatusKey) {
-		this(type, baseJsonObj, storageStatusKey, false);
+	public StateJson(Class<T> type, TileGrid<T> tileGrid, Object baseJsonObj, String storageStatusKey) {
+		this(type, tileGrid, baseJsonObj, storageStatusKey, false);
 	}
 
-	public StateJson(Class<T> type, Object baseJsonObj, String storageStatusKey, boolean cloneBase) {
+	public StateJson(Class<T> type, TileGrid<T> tileGrid, Object baseJsonObj, String storageStatusKey, boolean cloneBase) {
 		String statusJsonString = PlayN.storage().getItem(storageStatusKey);
 
 		if (statusJsonString == null) {
@@ -53,14 +51,14 @@ public class StateJson<T> {
 			List<T> baseValueList = new ArrayList<T>();
 			List<Tile> statusValueList = new ArrayList<Tile>();
 
-			for (int i=0; i<baseValueArray.length(); i++) {
-				Integer baseValue = baseValueArray.getInt(i);
+			for (int col=0; col<baseValueArray.length(); col++) {
+				Integer baseValue = baseValueArray.getInt(col);
 
 				if (baseValue == 0) {
 					baseValueList.add(null);
 				} else {
 					if (type == Tile.class) {
-						baseValueList.add((T) Tile.getTile(baseValue));
+						baseValueList.add((T) Tile.newTile(tileGrid, new Location(col, row), baseValue));
 					} else {
 						baseValueList.add((T) baseValue);
 					}
@@ -73,21 +71,13 @@ public class StateJson<T> {
 						statusValueList.add(null);
 					}
 				} else {
-					statusValueList.add(Tile.getTile(statusValueArray.getInt(i)));
+					statusValueList.add(Tile.newTile(tileGrid, new Location(col, row), statusValueArray.getInt(col)));
 				}
 			}
 
-			baseGridMap.put(row, baseValueList);
-			gridStatusMap.put(row, statusValueList);
+			tileGrid.setBaseRowTileList(row, baseValueList);
+			tileGrid.setRowTileList(row, statusValueList);
 		}
-	}
-
-	public HashMap<Integer, List<T>> getBaseGridMap() {
-		return baseGridMap;
-	}
-
-	public HashMap<Integer, List<Tile>> getGridStatusMap() {
-		return gridStatusMap;
 	}
 
 	public int par() {
@@ -102,23 +92,19 @@ public class StateJson<T> {
 		return hasStatus;
 	}
 
-	public List<Location> getMoveList() {
-		// TODO:
-		return new ArrayList<Location>();
-	}
-
-	public static void store(HashMap<Integer, List<Tile>> gridStatusMap, String storageStatusKey) {
+	public static void store(TileGrid<?> tileGrid, String storageStatusKey) {
 		Writer writer = PlayN.json().newWriter();
 		Writer gridWriter = writer.object().array("grid");
 
-		for (int row=0; row<gridStatusMap.size(); row++) {
-			List<Tile> rowTiles = gridStatusMap.get(row);
+		for (int row=0; row<tileGrid.rows(); row++) {
+			List<Tile> rowTiles = tileGrid.rowTileList(row);
 			Writer rowWriter = gridWriter.array();
 
 			for (Tile tile : rowTiles) {
 				if (tile == null) {
 					rowWriter.value(0);
 				} else {
+					System.out.println("Writing: " + tile.id());
 					rowWriter.value(tile.id());
 				}
 			}

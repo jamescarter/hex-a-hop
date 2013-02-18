@@ -1,18 +1,13 @@
 package com.github.jamescarter.hexahop.core.grid;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.github.jamescarter.hexahop.core.level.Location;
-import com.github.jamescarter.hexahop.core.level.Tile;
 import com.github.jamescarter.hexahop.core.player.Direction;
+import com.github.jamescarter.hexahop.core.tile.MapStatusTile;
 
 public class MapTileGrid extends TileGrid<Integer> {
-	public MapTileGrid(HashMap<Integer, List<Integer>> baseGridMap, HashMap<Integer, List<Tile>> gridStatusMap) {
-		super(baseGridMap, gridStatusMap);
-	}
-
 	public List<Location> connectedTo(Location location) {
 		List<Location> locationList = new ArrayList<Location>();
 
@@ -30,12 +25,10 @@ public class MapTileGrid extends TileGrid<Integer> {
 	}
 
 	public void unlockConnected(Location levelLocation) {
-		setStatusAt(levelLocation, Tile.COMPLETE);
+		((MapStatusTile)statusAt(levelLocation)).complete();
 
 		for (Location location : connectedTo(levelLocation)) {
-			if (statusAt(location) == null) {
-				setStatusAt(location, Tile.INCOMPLETE);
-			}
+			setStatusAt(location, new MapStatusTile(location));
 		}
 	}
 }

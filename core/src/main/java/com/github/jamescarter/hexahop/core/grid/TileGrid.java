@@ -3,17 +3,12 @@ package com.github.jamescarter.hexahop.core.grid;
 import java.util.HashMap;
 import java.util.List;
 import com.github.jamescarter.hexahop.core.level.Location;
-import com.github.jamescarter.hexahop.core.level.Tile;
 import com.github.jamescarter.hexahop.core.player.Direction;
+import com.github.jamescarter.hexahop.core.tile.Tile;
 
 public abstract class TileGrid<T> {
 	private HashMap<Integer, List<T>> baseGridMap = new HashMap<Integer, List<T>>();
 	private HashMap<Integer, List<Tile>> gridStatusMap = new HashMap<Integer, List<Tile>>();
-
-	public TileGrid(HashMap<Integer, List<T>> baseGridMap, HashMap<Integer, List<Tile>> gridStatusMap) {
-		this.baseGridMap = baseGridMap;
-		this.gridStatusMap = gridStatusMap;
-	}
 
 	public List<Tile> rowTileList(int row) {
 		return gridStatusMap.get(row);
@@ -63,7 +58,7 @@ public abstract class TileGrid<T> {
 		Tile currentStatusTile = statusAt(fromLocation);
 		Tile toStatusTile = statusAt(newLocation);
 
-		if (toStatusTile != null && (currentStatusTile == null || toStatusTile.isTall() == currentStatusTile.isTall())) {
+		if (toStatusTile != null && (currentStatusTile == null || (toStatusTile.isWall() == currentStatusTile.isWall() && toStatusTile.isActive()))) {
 			return true;
 		}
 
@@ -72,5 +67,13 @@ public abstract class TileGrid<T> {
 
 	public void setStatusAt(Location location, Tile newStatus) {
 		gridStatusMap.get(location.row()).set(location.col(), newStatus);
+	}
+
+	public void setBaseRowTileList(int row, List<T> tileList) {
+		baseGridMap.put(row, tileList);
+	}
+
+	public void setRowTileList(int row, List<Tile> tileList) {
+		gridStatusMap.put(row, tileList);
 	}
 }
