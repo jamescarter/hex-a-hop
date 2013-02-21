@@ -1,5 +1,6 @@
 package com.github.jamescarter.hexahop.core.grid;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import com.github.jamescarter.hexahop.core.level.Location;
@@ -23,31 +24,33 @@ public abstract class TileGrid<T> {
 	}
 
 	public T baseTileAt(Location location) {
-		if (location.row() >= baseGridMap.size() || location.row() < 0) {
+		if (isOutOfBounds(location)) {
 			return null;
 		}
 
-		List<T> baseTileList = baseGridMap.get(location.row());
-
-		if (location.col() >= baseTileList.size() || location.col() < 0) {
-			return null;
-		}
-
-		return baseTileList.get(location.col());
+		return baseGridMap.get(location.row()).get(location.col());
 	}
 
 	public Tile statusAt(Location location) {
-		if (location.row() >= gridStatusMap.size() || location.row() < 0) {
+		if (isOutOfBounds(location)) {
 			return null;
+		}
+
+		return gridStatusMap.get(location.row()).get(location.col());
+	}
+
+	public boolean isOutOfBounds(Location location) {
+		if (location.row() >= gridStatusMap.size() || location.row() < 0) {
+			return true;
 		}
 
 		List<Tile> statusList = gridStatusMap.get(location.row());
 
 		if (location.col() >= statusList.size() || location.col() < 0) {
-			return null;
+			return true;
 		}
 
-		return statusList.get(location.col());
+		return false;
 	}
 
 	public boolean canMove(Location fromLocation, Direction inDirection) {
@@ -63,6 +66,38 @@ public abstract class TileGrid<T> {
 		}
 
 		return false;
+	}
+
+	public List<Location> baseConnectedTo(Location location) {
+		return connectedTo(location, true);
+	}
+
+	public List<Location> statusConnectedTo(Location location) {
+		return connectedTo(location, false);
+	}
+
+	private List<Location> connectedTo(Location location, boolean isBase) {
+		List<Location> locationList = new ArrayList<Location>();
+
+		for (Direction direction : Direction.values()) {
+			Location newLocation = location.clone();
+
+			newLocation.move(direction);
+
+			if (isBase) {
+				if (baseTileAt(newLocation) != null) {
+					locationList.add(newLocation);
+				}
+			} else {
+				Tile statusTile = statusAt(newLocation);
+
+				if (statusTile != null && statusTile.isActive()) {
+					locationList.add(newLocation);
+				}
+			}
+		}
+
+		return locationList;
 	}
 
 	public void setStatusAt(Location location, Tile newStatus) {

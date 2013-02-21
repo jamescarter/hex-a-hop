@@ -68,7 +68,7 @@ public class MapScreen extends GridLoader {
 
 			for (int col=0; col<tileList.size(); col++) {
 				if (tileList.get(col) != null) {
-					for (Location toLocation : mapTileGrid.connectedTo(new Location(col, row))) {
+					for (Location toLocation : mapTileGrid.statusConnectedTo(new Location(col, row))) {
 						addLineLayer = true;
 
 						surface.drawLine(

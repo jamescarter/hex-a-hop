@@ -15,7 +15,7 @@ public class TrampolineTile extends Tile {
 
 	@Override
 	public Location stepOn(Direction direction) {
-		Location location = getLocation().clone();
+		Location location = location().clone();
 
 		// attempt to move the player up to two places in the same direction
 		for (int i=0; i<2; i++) {

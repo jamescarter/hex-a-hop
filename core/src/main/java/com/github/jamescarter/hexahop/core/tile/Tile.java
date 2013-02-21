@@ -62,7 +62,7 @@ public abstract class Tile extends ImageLayerGL {
 	}
 
 	/**
-	 * Return if the tile is activate or nto.
+	 * Return if the tile is activate or not.
 	 * 
 	 * @return true if the tile is active and in play, false if it is not.
 	 */
@@ -75,7 +75,7 @@ public abstract class Tile extends ImageLayerGL {
 	 * 
 	 * @return the tile location
 	 */
-	public Location getLocation() {
+	public Location location() {
 		return location;
 	}
 
@@ -89,7 +89,7 @@ public abstract class Tile extends ImageLayerGL {
 	 * Deactivate this tile. It will not be visible on the grid.
 	 * 
 	 */
-	public void deactiate() {
+	public void deactivate() {
 		active = false;
 		setVisible(false);
 	}
@@ -121,7 +121,8 @@ public abstract class Tile extends ImageLayerGL {
 				return new Collapsable2Tile(tileGrid, location, false);
 			case 8:
 				return new Collapsable2Tile(tileGrid, location, true);
-			case 80:
+			case 9:
+				return new GunTile(tileGrid, location);
 			case 81:
 			case 82:
 			case 83:

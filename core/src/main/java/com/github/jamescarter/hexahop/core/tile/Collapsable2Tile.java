@@ -40,7 +40,7 @@ public class Collapsable2Tile extends Tile {
 	@Override
 	public void stepOff() {
 		if (isBreakable) {
-			deactiate();
+			deactivate();
 
 			if (!containsBreakable(false)) {
 				if (containsBreakable(true)) {
