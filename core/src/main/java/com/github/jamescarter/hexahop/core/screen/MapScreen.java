@@ -22,7 +22,7 @@ import com.github.jamescarter.hexahop.core.tile.MapStatusTile;
 import com.github.jamescarter.hexahop.core.tile.Tile;
 
 public class MapScreen extends GridLoader {
-	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map_top.png"));
+	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map.png"));
 	private MapTileGrid mapTileGrid = new MapTileGrid();
 
 	public MapScreen(String mapJsonString) {

@@ -14,7 +14,7 @@ namespace com.github.jamescarter.hexahop
       app.SetStatusBarHidden(true, true);
       var pf = IOSPlatform.register(app, IOSPlatform.SupportedOrients.PORTRAITS);
       pf.assets().setPathPrefix("assets");
-      PlayN.run(new HexAHop());
+      PlayN.run(new HexAHop(true));
       return true;
     }
   }

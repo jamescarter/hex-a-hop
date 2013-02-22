@@ -6,6 +6,7 @@ import static playn.core.PlayN.graphics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.jamescarter.hexahop.core.HexAHop;
 import com.github.jamescarter.hexahop.core.callback.MapLoadCallback;
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
@@ -58,9 +59,8 @@ public class Level extends GridLoader {
 
 		getGridLayer().add(player);
 
-		// Center grid layer
 		getGridLayer().setTranslation(
-			((640 - (getTileGrid().cols() * 46)) / 2) - 10,
+			((HexAHop.gameWidth - (getTileGrid().cols() * 46)) / 2) - 10,
 			((480 - (getTileGrid().rows() * 36)) / 2) - 36
 		);
 
