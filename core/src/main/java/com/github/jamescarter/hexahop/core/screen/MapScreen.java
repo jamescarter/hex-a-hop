@@ -56,6 +56,11 @@ public class MapScreen extends GridLoader {
 	public void load() {
 		PlayN.keyboard().setListener(null);
 
+		getGridLayer().setTranslation(
+			170,
+			30
+		);
+
 		SurfaceLayer lineLayer = graphics().createSurfaceLayer(1000, 480);
 		Surface surface = lineLayer.surface();
 		surface.setFillColor(Color.rgb(39, 23, 107));
