@@ -20,6 +20,7 @@ public class GunTile extends Tile {
 	/**
 	 * Find the next tile in the line of sight and destroy it.
 	 * 
+	 * If another gun is hit, it will destroy the surrounding tiles.
 	 */
 	@Override
 	public Location stepOn(Direction direction) {
@@ -41,11 +42,26 @@ public class GunTile extends Tile {
 			statusTile.deactivate();
 
 			destroyedList.add(statusTile);
+
+			if (statusTile instanceof GunTile) {
+				for (Location location : tileGrid.statusConnectedTo(lineLocation)) {
+					statusTile = tileGrid.statusAt(location);
+
+					statusTile.deactivate();
+
+					destroyedList.add(statusTile);
+				}
+			}
 		}
 
 		destroyedTileList.add(destroyedList);
 
 		return null;
+	}
+
+	@Override
+	public void stepOff() {
+		destroyedTileList.add(new ArrayList<Tile>());
 	}
 
 	@Override
