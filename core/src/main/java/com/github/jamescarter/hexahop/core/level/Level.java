@@ -151,10 +151,14 @@ public class Level extends GridLoader {
 
 		Location location = moveList.remove(moveList.size() - 1);
 
-		if (player.visible()) {
-			getTile(player.location()).undo();
-		} else {
+		if (!player.visible()) {
 			player.setVisible(true);
+		}
+
+		Tile statusTile = getTile(player.location());
+
+		if (statusTile != null) {
+			statusTile.undo();
 		}
 
 		player.jumpTo(location, true);
@@ -172,7 +176,11 @@ public class Level extends GridLoader {
 		} else {
 			Location endLocation = statusTile.stepOn(direction);
 
-			if (endLocation != null) {
+			if (endLocation == null) {
+				if (!levelTileGrid.statusAt(location).isActive()) {
+					player.setVisible(false);
+				}
+			} else {
 				player.jumpTo(endLocation, false);
 
 				stepOnTile(endLocation, direction);
