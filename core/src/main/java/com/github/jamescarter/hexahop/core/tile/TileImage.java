@@ -49,4 +49,14 @@ public enum TileImage {
 	public Image getImage() {
 		return tileImage.subImage(col * 64, row * 64, 64, 64);
 	}
+
+	public static TileImage getTileImage(int id) {
+		for (TileImage ti : values()) {
+			if (ti.id() == id) {
+				return ti;
+			}
+		}
+
+		return null;
+	}
 }

@@ -188,7 +188,7 @@ public class Level extends GridLoader {
 	}
 
 	public void complete() {
-		assets().getText("levels/map.json", new MapLoadCallback(levelLocation));
+		assets().getText("levels/map.json", new MapLoadCallback(levelLocation, moveList.size() - 1 <= par));
 	}
 
 	@Override

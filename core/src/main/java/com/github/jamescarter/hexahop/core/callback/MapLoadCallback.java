@@ -7,14 +7,20 @@ import playn.core.util.Callback;
 
 public class MapLoadCallback implements Callback<String> {
 	private Location location;
+	private boolean par;
 
-	public MapLoadCallback(Location location) {
+	public MapLoadCallback() {
+		this(null, false);
+	}
+
+	public MapLoadCallback(Location location, boolean par) {
 		this.location = location;
+		this.par = par;
 	}
 
 	@Override
 	public void onSuccess(String json) {
-		new MapScreen(location, json).load();
+		new MapScreen(location, par, json).load();
 	}
 
 	@Override

@@ -8,6 +8,12 @@ public class MapStatusTile extends Tile {
 	}
 
 	public void complete() {
-		setTileImage(TileImage.COMPLETE);
+		if (id() != TileImage.PERFECT.id()) {
+			setTileImage(TileImage.COMPLETE);
+		}
+	}
+
+	public void perfect() {
+		setTileImage(TileImage.PERFECT);
 	}
 }

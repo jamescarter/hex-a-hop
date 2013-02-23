@@ -103,32 +103,54 @@ public abstract class Tile extends ImageLayerGL {
 		setVisible(true);
 	}
 
-	public static Tile newTile(TileGrid<?> tileGrid, Location location, int id) {
-		switch(id) {
-			case 0:
-				return null;
+	public void restore(TileImage ti) {
+		setTileImage(ti);
+	}
+
+	public static Tile newTile(TileGrid<?> tileGrid, Location location, int baseId, int stateId) {
+		Tile tile;
+
+		switch(baseId) {
 			case 1:
-				return new StoneTile(location, false);
+				tile = new StoneTile(location, false);
+			break;
 			case 2:
-				return new CollapsableTile(tileGrid, location, false);
+				tile = new CollapsableTile(tileGrid, location, false);
+			break;
 			case 3:
-				return new CollapsableTile(tileGrid, location, true);
+				tile = new CollapsableTile(tileGrid, location, true);
+			break;
 			case 4:
-				return new TrampolineTile(tileGrid, location);
+				tile = new TrampolineTile(tileGrid, location);
+			break;
 			case 6:
-				return new StoneTile(location, true);
+				tile = new StoneTile(location, true);
+			break;
 			case 7:
-				return new Collapsable2Tile(tileGrid, location, false);
+				tile = new Collapsable2Tile(tileGrid, location, false);
+			break;
 			case 8:
-				return new Collapsable2Tile(tileGrid, location, true);
+				tile = new Collapsable2Tile(tileGrid, location, true);
+			break;
 			case 9:
-				return new GunTile(tileGrid, location);
+				tile = new GunTile(tileGrid, location);
+			break;
 			case 81:
 			case 82:
 			case 83:
-				return new MapStatusTile(location);
+				tile = new MapStatusTile(location);
+
+				tile.restore(TileImage.getTileImage(baseId));
+
+				return tile;
+			default:
+				return null;
 		}
 
-		return null;
+		if (stateId > 0) {
+			tile.restore(TileImage.getTileImage(stateId));
+		}
+
+		return tile;
 	}
 }

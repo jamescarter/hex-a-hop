@@ -58,7 +58,7 @@ public class StateJson<T> {
 					baseValueList.add(null);
 				} else {
 					if (type == Tile.class) {
-						baseValueList.add((T) Tile.newTile(tileGrid, new Location(col, row), baseValue));
+						baseValueList.add((T) Tile.newTile(tileGrid, new Location(col, row), baseValue, 0));
 					} else {
 						baseValueList.add((T) baseValue);
 					}
@@ -71,7 +71,7 @@ public class StateJson<T> {
 						statusValueList.add(null);
 					}
 				} else {
-					statusValueList.add(Tile.newTile(tileGrid, new Location(col, row), statusValueArray.getInt(col)));
+					statusValueList.add(Tile.newTile(tileGrid, new Location(col, row), statusValueArray.getInt(col), baseValue));
 				}
 			}
 

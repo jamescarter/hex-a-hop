@@ -48,7 +48,7 @@ public class TitleScreen implements Loadable {
 		newGameLayer.addListener(new Pointer.Adapter() {
 			@Override
 			public void onPointerEnd(Pointer.Event event) {
-				assets().getText("levels/map.json", new MapLoadCallback(null));
+				assets().getText("levels/map.json", new MapLoadCallback());
 			}
 		});
 

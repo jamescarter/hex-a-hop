@@ -4,8 +4,14 @@ import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.tile.MapStatusTile;
 
 public class MapTileGrid extends TileGrid<Integer> {
-	public void unlockConnected(Location levelLocation) {
-		((MapStatusTile)statusAt(levelLocation)).complete();
+	public void unlockConnected(Location levelLocation, boolean par) {
+		MapStatusTile statusTile = (MapStatusTile)statusAt(levelLocation);
+
+		if (par) {
+			statusTile.perfect();
+		} else {
+			statusTile.complete();
+		}
 
 		for (Location location : baseConnectedTo(levelLocation)) {
 			if (statusAt(location) == null) {

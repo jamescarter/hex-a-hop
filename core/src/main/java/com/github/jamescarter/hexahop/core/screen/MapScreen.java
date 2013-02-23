@@ -25,11 +25,7 @@ public class MapScreen extends GridLoader {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map.png"));
 	private MapTileGrid mapTileGrid = new MapTileGrid();
 
-	public MapScreen(String mapJsonString) {
-		this(null, mapJsonString);
-	}
-
-	public MapScreen(Location completedLevelLocation, String mapJsonString) {
+	public MapScreen(Location completedLevelLocation, boolean completedLevelPar, String mapJsonString) {
 		StateJson<Integer> mapJson = new StateJson<Integer>(
 			Integer.class,
 			mapTileGrid,
@@ -46,7 +42,7 @@ public class MapScreen extends GridLoader {
 		}
 
 		if (completedLevelLocation != null) {
-			mapTileGrid.unlockConnected(completedLevelLocation);
+			mapTileGrid.unlockConnected(completedLevelLocation, completedLevelPar);
 
 			StateJson.store(mapTileGrid, StateJson.STORAGE_KEY_MAP);
 		}
