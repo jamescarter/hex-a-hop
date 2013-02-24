@@ -12,4 +12,9 @@ public class HexAHopActivity extends GameActivity {
 
 		PlayN.run(new HexAHop(true));
 	}
+
+	@Override
+	public void onBackPressed() {
+		// allow keyboard listener to handle back button
+	}
 }

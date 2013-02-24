@@ -99,6 +99,7 @@ public class Level extends GridLoader {
 				switch(event.key()) {
 					case U:
 					case Z:
+					case BACK:
 						undo();
 					break;
 					case UP:
