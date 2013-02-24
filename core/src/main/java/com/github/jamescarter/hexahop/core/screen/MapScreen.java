@@ -7,6 +7,8 @@ import java.util.List;
 
 import playn.core.Color;
 import playn.core.ImageLayer;
+import playn.core.Keyboard;
+import playn.core.Keyboard.Event;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
@@ -50,7 +52,18 @@ public class MapScreen extends GridLoader {
 
 	@Override
 	public void load() {
-		PlayN.keyboard().setListener(null);
+		PlayN.keyboard().setListener(new Keyboard.Adapter() {
+			@Override
+			public void onKeyDown(Event event) {
+				switch(event.key()) {
+					case ESCAPE:
+					case BACK:
+						new TitleScreen().load();
+					break;
+					default:
+				}
+			}
+		});
 
 		getGridLayer().setTranslation(
 			170,
