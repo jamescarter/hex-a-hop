@@ -4,18 +4,18 @@ import static playn.core.PlayN.graphics;
 
 import java.util.List;
 
-import com.github.jamescarter.hexahop.core.Loadable;
 import com.github.jamescarter.hexahop.core.level.Location;
+import com.github.jamescarter.hexahop.core.screen.HexScreen;
 import com.github.jamescarter.hexahop.core.tile.Tile;
 
 import playn.core.GroupLayer;
 import playn.core.Layer;
 
-public abstract class GridLoader implements Loadable {
+public abstract class GridLoader extends HexScreen {
 	private GroupLayer gridLayer = graphics().createGroupLayer();
 
 	@Override
-	public void load() {
+	public void wasAdded() {
 		for (int row=0; row<getTileGrid().rows(); row++) {
 			List<Tile> tileList = getTileGrid().rowTileList(row);
 
@@ -24,9 +24,8 @@ public abstract class GridLoader implements Loadable {
 			addTiles(gridLayer, tileList, row, 1); // odd
 		}
 
-		graphics().rootLayer().clear();
-		graphics().rootLayer().add(getBackgroundLayer());
-		graphics().rootLayer().add(gridLayer);
+		layer.add(getBackgroundLayer());
+		layer.add(gridLayer);
 	}
 
 	public void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {

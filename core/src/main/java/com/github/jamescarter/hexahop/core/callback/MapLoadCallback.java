@@ -1,6 +1,7 @@
 package com.github.jamescarter.hexahop.core.callback;
 
 import com.github.jamescarter.hexahop.core.level.Location;
+import com.github.jamescarter.hexahop.core.screen.HexScreen;
 import com.github.jamescarter.hexahop.core.screen.MapScreen;
 
 import playn.core.util.Callback;
@@ -20,7 +21,7 @@ public class MapLoadCallback implements Callback<String> {
 
 	@Override
 	public void onSuccess(String json) {
-		new MapScreen(location, par, json).load();
+		HexScreen.screens.replace(new MapScreen(location, par, json));
 	}
 
 	@Override

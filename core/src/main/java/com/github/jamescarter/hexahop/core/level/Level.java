@@ -26,7 +26,7 @@ import playn.core.PlayN;
 import playn.core.Touch;
 
 public class Level extends GridLoader {
-	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
+	private final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private Location levelLocation;
 	private List<Location> moveList = new ArrayList<Location>();
 	private LevelTileGrid levelTileGrid = new LevelTileGrid(this);
@@ -45,7 +45,7 @@ public class Level extends GridLoader {
 		);
 
 		par = levelJson.par();
-		player = new Player(levelJson.start());
+		player = new Player(anim, levelJson.start());
 		moveList.add(levelJson.start());
 	}
 
@@ -54,8 +54,8 @@ public class Level extends GridLoader {
 	}
 
 	@Override
-	public void load() {
-		super.load();
+	public void wasShown() {
+		super.wasShown();
 
 		getGridLayer().add(player);
 

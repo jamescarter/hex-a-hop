@@ -7,32 +7,29 @@ import com.github.jamescarter.hexahop.core.level.Location;
 
 import playn.core.Image;
 import playn.core.gl.ImageLayerGL;
+import tripleplay.anim.Animator;
 
 public class Player extends ImageLayerGL {
 	private static final Image playerImage = assets().getImage("images/player.png");
 	private Direction direction = Direction.SOUTH;
-	private Position position = Position.STANDING;
 	private Location location;
+	private Animator anim;
 
-	public Player(Location location) {
-		super(graphics().ctx(), playerImage);
+	public Player(Animator anim, Location location) {
+		super(graphics().ctx(), null);
 
 		this.location = location;
+		this.anim = anim;
 
 		setWidth(65);
 		setHeight(80);
 
-		setImage();
-
-		setPosition();
-	}
-
-	private void setImage() {
-		setImage(playerImage.subImage(direction.x(), position.y(), 65, 80));
-	}
-
-	private void setPosition() {
+		setImage(Position.STANDING);
 		setTranslation(getGridColPosition(), getGridRowPosition());
+	}
+
+	private void setImage(Position position) {
+		setImage(playerImage.subImage(direction.x(), position.y(), 65, 80));
 	}
 
 	private int getGridColPosition() {
@@ -62,11 +59,24 @@ public class Player extends ImageLayerGL {
 
 		this.location = newLocation;
 
-		setImage();
-		setPosition();
+		animate();
 	}
 
 	public Location location() {
 		return location;
+	}
+
+	private void animate() {
+		anim.action(new Runnable() {
+			@Override
+			public void run() {
+				setImage(Position.LEFT_JUMP);
+			}
+		}).then().tweenXY(this).to(getGridColPosition(), getGridRowPosition()).in(250).then().action(new Runnable() {
+			@Override
+			public void run() {
+				setImage(Position.STANDING);
+			}
+		});
 	}
 }

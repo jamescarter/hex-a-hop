@@ -14,6 +14,7 @@ import playn.core.PlayN;
 import playn.core.Pointer;
 import playn.core.Surface;
 import playn.core.SurfaceLayer;
+
 import com.github.jamescarter.hexahop.core.callback.LevelLoadCallback;
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.MapTileGrid;
@@ -24,8 +25,8 @@ import com.github.jamescarter.hexahop.core.tile.MapStatusTile;
 import com.github.jamescarter.hexahop.core.tile.Tile;
 
 public class MapScreen extends GridLoader {
-	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map.png"));
-	private MapTileGrid mapTileGrid = new MapTileGrid();
+	private final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/map.png"));
+	private final MapTileGrid mapTileGrid = new MapTileGrid();
 
 	public MapScreen(Location completedLevelLocation, boolean completedLevelPar, String mapJsonString) {
 		StateJson<Integer> mapJson = new StateJson<Integer>(
@@ -51,20 +52,7 @@ public class MapScreen extends GridLoader {
 	}
 
 	@Override
-	public void load() {
-		PlayN.keyboard().setListener(new Keyboard.Adapter() {
-			@Override
-			public void onKeyDown(Event event) {
-				switch(event.key()) {
-					case ESCAPE:
-					case BACK:
-						new TitleScreen().load();
-					break;
-					default:
-				}
-			}
-		});
-
+	public void wasAdded() {
 		getGridLayer().setTranslation(
 			170,
 			30
@@ -101,7 +89,7 @@ public class MapScreen extends GridLoader {
 			add(lineLayer);
 		}
 
-		super.load();
+		super.wasAdded();
 
 		bgLayer.addListener(new Pointer.Adapter() {
 			@Override
@@ -111,6 +99,22 @@ public class MapScreen extends GridLoader {
 				// Make sure the level is activated before allowing the user to load it
 				if (mapTileGrid.statusAt(location) != null) {
 					assets().getText("levels/" + getLevelName(mapTileGrid.baseTileAt(location)) + ".json", new LevelLoadCallback(location));
+				}
+			}
+		});
+	}
+
+	@Override
+	public void wasShown() {
+		PlayN.keyboard().setListener(new Keyboard.Adapter() {
+			@Override
+			public void onKeyDown(Event event) {
+				switch(event.key()) {
+					case ESCAPE:
+					case BACK:
+						screens.replace(new TitleScreen());
+					break;
+					default:
 				}
 			}
 		});

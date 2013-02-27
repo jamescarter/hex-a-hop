@@ -2,6 +2,7 @@ package com.github.jamescarter.hexahop.core.callback;
 
 import com.github.jamescarter.hexahop.core.level.Level;
 import com.github.jamescarter.hexahop.core.level.Location;
+import com.github.jamescarter.hexahop.core.screen.HexScreen;
 
 import playn.core.util.Callback;
 
@@ -14,7 +15,7 @@ public class LevelLoadCallback implements Callback<String> {
 
 	@Override
 	public void onSuccess(String json) {
-		new Level(location, json).load();
+		HexScreen.screens.replace(new Level(location, json));
 	}
 
 	@Override

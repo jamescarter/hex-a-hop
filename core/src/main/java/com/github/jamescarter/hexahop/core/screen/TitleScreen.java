@@ -12,28 +12,28 @@ import playn.core.PlayN;
 import playn.core.Pointer;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-
-import com.github.jamescarter.hexahop.core.Loadable;
+import tripleplay.game.Screen;
 import com.github.jamescarter.hexahop.core.callback.MapLoadCallback;
 
-public class TitleScreen implements Loadable {
+public class TitleScreen extends Screen {
 	private static final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private static final ImageLayer titleLayer = graphics().createImageLayer(assets().getImage("images/title.png"));
 
 	@Override
-	public void load() {
-		PlayN.keyboard().setListener(null);
-
-		GroupLayer rootLayer = graphics().rootLayer();
+	public void wasAdded() {
 		GroupLayer titleMenuLayer = graphics().createGroupLayer();
 
 		titleMenuLayer.add(bgLayer);
 		titleMenuLayer.add(titleLayer);
 
-		rootLayer.clear();
-		rootLayer.add(titleMenuLayer);
+		layer.add(titleMenuLayer);
 
 		addTitleMenuOptions(titleMenuLayer);
+	}
+
+	@Override
+	public void wasShown() {
+		PlayN.keyboard().setListener(null);
 	}
 
 	private void addTitleMenuOptions(GroupLayer titleMenuLayer) {
