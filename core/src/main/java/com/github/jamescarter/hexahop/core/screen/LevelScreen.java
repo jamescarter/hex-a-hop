@@ -1,4 +1,4 @@
-package com.github.jamescarter.hexahop.core.level;
+package com.github.jamescarter.hexahop.core.screen;
 
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
@@ -12,6 +12,7 @@ import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.json.StateJson;
+import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
 import com.github.jamescarter.hexahop.core.tile.Tile;
@@ -25,7 +26,7 @@ import playn.core.Mouse.ButtonEvent;
 import playn.core.PlayN;
 import playn.core.Touch;
 
-public class Level extends GridLoader {
+public class LevelScreen extends GridLoader {
 	private final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private Location levelLocation;
 	private List<Location> moveList = new ArrayList<Location>();
@@ -33,7 +34,7 @@ public class Level extends GridLoader {
 	private int par;
 	private Player player;
 
-	public Level(Location location, String levelJsonString) {
+	public LevelScreen(Location location, String levelJsonString) {
 		this.levelLocation = location;
 
 		StateJson<Tile> levelJson = new StateJson<Tile>(
