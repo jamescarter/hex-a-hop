@@ -14,6 +14,7 @@ public class Player extends ImageLayerGL {
 	private Direction direction = Direction.SOUTH;
 	private Location location;
 	private Animator anim;
+	private boolean left = true;
 
 	public Player(Animator anim, Location location) {
 		super(graphics().ctx(), null);
@@ -70,7 +71,7 @@ public class Player extends ImageLayerGL {
 		anim.action(new Runnable() {
 			@Override
 			public void run() {
-				setImage(Position.LEFT_JUMP);
+				setImage((left) ? Position.LEFT_JUMP : Position.RIGHT_JUMP);
 			}
 		}).then().tweenXY(this).to(getGridColPosition(), getGridRowPosition()).in(250).then().action(new Runnable() {
 			@Override
@@ -78,5 +79,7 @@ public class Player extends ImageLayerGL {
 				setImage(Position.STANDING);
 			}
 		});
+
+		left = !left;
 	}
 }
