@@ -155,12 +155,12 @@ public class LevelScreen extends GridLoader {
 
 		if (!player.visible()) {
 			player.setVisible(true);
-		}
+		} else {
+			Tile statusTile = getTile(player.location());
 
-		Tile statusTile = getTile(player.location());
-
-		if (statusTile != null) {
-			statusTile.undo();
+			if (statusTile != null) {
+				statusTile.undo();
+			}
 		}
 
 		player.jumpTo(location, true);
