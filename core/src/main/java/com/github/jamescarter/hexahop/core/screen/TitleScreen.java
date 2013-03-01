@@ -45,7 +45,7 @@ public class TitleScreen extends Screen {
 
 		newGameLayer.setTranslation(380, 200);
 
-		newGameLayer.addListener(new Pointer.Adapter() {
+		bgLayer.addListener(new Pointer.Adapter() {
 			@Override
 			public void onPointerEnd(Pointer.Event event) {
 				assets().getText("levels/map.json", new MapLoadCallback());
