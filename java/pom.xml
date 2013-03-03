@@ -47,6 +47,15 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.12</version>
+        <configuration>
+            <argLine>-Djava.library.path=${basedir}/target/natives</argLine>
+        </configuration>
+      </plugin>
+
       <!-- allows testing of Java backend via: mvn test -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>

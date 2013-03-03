@@ -89,4 +89,17 @@ public class Location {
 	public Location clone() {
 		return new Location(col, row);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Location) {
+			Location that = (Location) obj;
+
+			if (this.col() == that.col() && this.row() == that.row()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
