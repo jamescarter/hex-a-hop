@@ -61,7 +61,7 @@ public class LevelScreen extends GridLoader {
 		getGridLayer().add(player);
 
 		getGridLayer().setTranslation(
-			((HexAHop.gameWidth - (getTileGrid().cols() * 46)) / 2) - 10,
+			(((640 * HexAHop.scaleY) - ((getTileGrid().cols() * 46) * HexAHop.scaleY)) / 2) - 18,
 			((480 - (getTileGrid().rows() * 36)) / 2) - 36
 		);
 

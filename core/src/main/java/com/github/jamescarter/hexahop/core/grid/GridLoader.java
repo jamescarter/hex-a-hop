@@ -4,6 +4,7 @@ import static playn.core.PlayN.graphics;
 
 import java.util.List;
 
+import com.github.jamescarter.hexahop.core.HexAHop;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.screen.HexScreen;
 import com.github.jamescarter.hexahop.core.tile.Tile;
@@ -55,7 +56,10 @@ public abstract class GridLoader extends HexScreen {
 	}
 
 	public Location getGridLocation(float x, float y) {
-		// Offset clicked location based on where the levelLayer is centered
+		// Offset clicked location based on where the levelLayer is positioned
+		x = x / HexAHop.scaleY;
+		y = y / HexAHop.scaleY;
+
 		int col = (int) ((x - getGridLayer().tx()) / 48);
 		int row = (int) ((y - getGridLayer().ty()) / 38);
 

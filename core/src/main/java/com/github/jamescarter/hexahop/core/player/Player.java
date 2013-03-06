@@ -26,23 +26,11 @@ public class Player extends ImageLayerGL {
 		setHeight(80);
 
 		setImage(Position.STANDING);
-		setTranslation(getGridColPosition(), getGridRowPosition());
+		setTranslation(level.getColPosition(location.col(), 0), level.getRowPosition(location.row(), location.col(), -18));
 	}
 
 	private void setImage(Position position) {
 		setImage(playerImage.subImage(direction.x(), position.y(), 65, 80));
-	}
-
-	private int getGridColPosition() {
-		return location.col() * 46;
-	}
-
-	private int getGridRowPosition() {
-		if (location.col() % 2 == 0) {
-			return (location.row() * 36) - 18;
-		} else {
-			return (location.row() * 36);
-		}
 	}
 
 	public void move(Direction direction) {
@@ -74,7 +62,7 @@ public class Player extends ImageLayerGL {
 			public void run() {
 				setImage((left) ? Position.LEFT_JUMP : Position.RIGHT_JUMP);
 			}
-		}).then().tweenXY(this).to(getGridColPosition(), getGridRowPosition()).in(250).then().action(new Runnable() {
+		}).then().tweenXY(this).to(level.getColPosition(location.col(), 0), level.getRowPosition(location.row(), location.col(), -18)).in(250).then().action(new Runnable() {
 			@Override
 			public void run() {
 				setImage(Position.STANDING);
