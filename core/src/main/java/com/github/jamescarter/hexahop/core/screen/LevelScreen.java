@@ -46,7 +46,7 @@ public class LevelScreen extends GridLoader {
 		);
 
 		par = levelJson.par();
-		player = new Player(anim, levelJson.start());
+		player = new Player(this, levelJson.start());
 		moveList.add(levelJson.start());
 	}
 
@@ -123,6 +123,9 @@ public class LevelScreen extends GridLoader {
 					case D:
 						move(Direction.SOUTH_EAST);
 					break;
+					case ESCAPE:
+					case MENU:
+						backToMap();
 					default:
 				}
 			}
@@ -136,8 +139,6 @@ public class LevelScreen extends GridLoader {
 			levelTileGrid.statusAt(player.location()).stepOff();
 
 			player.move(direction);
-
-			stepOnTile(player.location(), direction);
 		}
 	}
 
@@ -170,7 +171,7 @@ public class LevelScreen extends GridLoader {
 		return true;
 	}
 
-	private void stepOnTile(Location location, Direction direction) {
+	public void stepOnTile(Location location, Direction direction) {
 		Tile statusTile = levelTileGrid.statusAt(location);
 
 		if (statusTile == null || !statusTile.isActive()) {
@@ -184,8 +185,6 @@ public class LevelScreen extends GridLoader {
 				}
 			} else {
 				player.jumpTo(endLocation, false);
-
-				stepOnTile(endLocation, direction);
 			}
 		}
 	}
@@ -209,6 +208,10 @@ public class LevelScreen extends GridLoader {
 
 	public void complete() {
 		assets().getText("levels/map.json", new MapLoadCallback(levelLocation, moveList.size() - 1 <= par));
+	}
+
+	private void backToMap() {
+		assets().getText("levels/map.json", new MapLoadCallback());
 	}
 
 	@Override

@@ -4,23 +4,23 @@ import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
 import com.github.jamescarter.hexahop.core.level.Location;
+import com.github.jamescarter.hexahop.core.screen.LevelScreen;
 
 import playn.core.Image;
 import playn.core.gl.ImageLayerGL;
-import tripleplay.anim.Animator;
 
 public class Player extends ImageLayerGL {
 	private static final Image playerImage = assets().getImage("images/player.png");
 	private Direction direction = Direction.SOUTH;
+	private LevelScreen level;
 	private Location location;
-	private Animator anim;
 	private boolean left = true;
 
-	public Player(Animator anim, Location location) {
+	public Player(LevelScreen level, Location location) {
 		super(graphics().ctx(), null);
 
 		this.location = location;
-		this.anim = anim;
+		this.level = level;
 
 		setWidth(65);
 		setHeight(80);
@@ -59,16 +59,17 @@ public class Player extends ImageLayerGL {
 		}
 
 		this.location = newLocation;
+		this.left = !left;
 
-		animate();
+		animateMove();
 	}
 
 	public Location location() {
 		return location;
 	}
 
-	private void animate() {
-		anim.action(new Runnable() {
+	private void animateMove() {
+		level.anim.action(new Runnable() {
 			@Override
 			public void run() {
 				setImage((left) ? Position.LEFT_JUMP : Position.RIGHT_JUMP);
@@ -78,8 +79,11 @@ public class Player extends ImageLayerGL {
 			public void run() {
 				setImage(Position.STANDING);
 			}
+		}).then().delay(0.5f).then().action(new Runnable() {
+			@Override
+			public void run() {
+				level.stepOnTile(location, direction);
+			}
 		});
-
-		left = !left;
 	}
 }
