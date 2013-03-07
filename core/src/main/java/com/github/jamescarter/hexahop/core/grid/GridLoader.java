@@ -20,17 +20,15 @@ public abstract class GridLoader extends HexScreen {
 		for (int row=0; row<getTileGrid().rows(); row++) {
 			List<Tile> tileList = getTileGrid().rowTileList(row);
 
-			// Add even column tiles first so they overlap properly with the odd columns
-			addTiles(gridLayer, tileList, row, 0); // even
-			addTiles(gridLayer, tileList, row, 1); // odd
+			addTiles(gridLayer, tileList, row);
 		}
 
 		layer.add(getBackgroundLayer());
 		layer.add(gridLayer);
 	}
 
-	public void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row, int start) {
-		for (int col=start; col<tileList.size(); col+=2) {
+	public void addTiles(GroupLayer levelLayer, List<Tile> tileList, int row) {
+		for (int col=0; col<tileList.size(); col++) {
 			Tile tile = tileList.get(col);
 
 			if (tile != null) {

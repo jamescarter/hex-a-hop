@@ -19,6 +19,8 @@ public abstract class Tile extends ImageLayerGL {
 
 		this.id = ti.id();
 		this.location = location;
+
+		setDepth(location.row() - ((location.col() % 2 == 0) ? 0.4f : 0.2f));
 	}
 
 	/**

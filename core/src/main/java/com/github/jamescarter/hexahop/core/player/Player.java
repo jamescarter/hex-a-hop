@@ -24,6 +24,7 @@ public class Player extends ImageLayerGL {
 
 		setWidth(65);
 		setHeight(80);
+		setDepth(location.row());
 
 		setImage(Position.STANDING);
 		setTranslation(level.getColPosition(location.col(), 0), level.getRowPosition(location.row(), location.col(), -18));
@@ -49,6 +50,8 @@ public class Player extends ImageLayerGL {
 		this.location = newLocation;
 		this.left = !left;
 
+		setDepth(newLocation.row() - ((location.col() % 2 == 0) ? 0.3f : 0.1f));
+
 		animateMove();
 	}
 
@@ -67,7 +70,7 @@ public class Player extends ImageLayerGL {
 			public void run() {
 				setImage(Position.STANDING);
 			}
-		}).then().delay(0.5f).then().action(new Runnable() {
+		}).then().delay(200).then().action(new Runnable() {
 			@Override
 			public void run() {
 				level.stepOnTile(location, direction);
