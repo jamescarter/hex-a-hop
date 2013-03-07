@@ -7,6 +7,7 @@ import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.player.Direction;
 
 import playn.core.gl.ImageLayerGL;
+import tripleplay.anim.Animator;
 
 public abstract class Tile extends ImageLayerGL {
 	private int id;
@@ -107,7 +108,7 @@ public abstract class Tile extends ImageLayerGL {
 		setTileImage(ti);
 	}
 
-	public static Tile newTile(TileGrid<?> tileGrid, Location location, int baseId, int stateId) {
+	public static Tile newTile(TileGrid<?> tileGrid, Location location, Animator anim, int baseId, int stateId) {
 		Tile tile;
 
 		switch(baseId) {
@@ -115,10 +116,10 @@ public abstract class Tile extends ImageLayerGL {
 				tile = new StoneTile(location, false);
 			break;
 			case 2:
-				tile = new CollapsableTile(tileGrid, location, false);
+				tile = new CollapsableTile(tileGrid, location, false, anim);
 			break;
 			case 3:
-				tile = new CollapsableTile(tileGrid, location, true);
+				tile = new CollapsableTile(tileGrid, location, true, anim);
 			break;
 			case 4:
 				tile = new TrampolineTile(tileGrid, location);
@@ -127,10 +128,10 @@ public abstract class Tile extends ImageLayerGL {
 				tile = new StoneTile(location, true);
 			break;
 			case 7:
-				tile = new Collapsable2Tile(tileGrid, location, false);
+				tile = new Collapsable2Tile(tileGrid, location, false, anim);
 			break;
 			case 8:
-				tile = new Collapsable2Tile(tileGrid, location, true);
+				tile = new Collapsable2Tile(tileGrid, location, true, anim);
 			break;
 			case 9:
 				tile = new GunTile(tileGrid, location);

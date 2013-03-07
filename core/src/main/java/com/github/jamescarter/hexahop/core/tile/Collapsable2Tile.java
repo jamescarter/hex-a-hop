@@ -1,5 +1,8 @@
 package com.github.jamescarter.hexahop.core.tile;
 
+import playn.core.PlayN;
+import tripleplay.anim.Animator;
+
 import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.level.Location;
@@ -10,12 +13,14 @@ public class Collapsable2Tile extends Tile {
 	private boolean isWall;
 	private boolean isBreakable = false;
 	private boolean toggledExternalWalls = false;
+	private Animator anim;
 
-	public Collapsable2Tile(TileGrid<?> tileGrid, Location location, boolean isWall) {
+	public Collapsable2Tile(TileGrid<?> tileGrid, Location location, boolean isWall, Animator anim) {
 		super(location, (isWall) ? TileImage.COLLAPSABLE2_WALL : TileImage.COLLAPSABLE2);
 
 		this.tileGrid = tileGrid;
 		this.isWall = isWall;
+		this.anim = anim;
 	}
 
 	@Override
@@ -104,7 +109,12 @@ public class Collapsable2Tile extends Tile {
 		if (isWall) {
 			setTileImage(TileImage.COLLAPSABLE2_WALL);
 		} else {
-			setTileImage(TileImage.COLLAPSABLE2);
+			anim.delay(PlayN.random() * 500).then().action(new Runnable() {
+				@Override
+				public void run() {
+					setTileImage(TileImage.COLLAPSABLE2);
+				}
+			});
 		}
 	}
 

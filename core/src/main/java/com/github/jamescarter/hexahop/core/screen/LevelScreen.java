@@ -40,6 +40,7 @@ public class LevelScreen extends GridLoader {
 		StateJson<Tile> levelJson = new StateJson<Tile>(
 			Tile.class,
 			levelTileGrid,
+			anim,
 			PlayN.json().parse(levelJsonString),
 			"level-" + location.col() + "x" + location.row(),
 			true

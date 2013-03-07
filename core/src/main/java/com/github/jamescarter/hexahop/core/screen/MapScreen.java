@@ -32,6 +32,7 @@ public class MapScreen extends GridLoader {
 		StateJson<Integer> mapJson = new StateJson<Integer>(
 			Integer.class,
 			mapTileGrid,
+			anim,
 			PlayN.json().parse(
 				mapJsonString
 			),

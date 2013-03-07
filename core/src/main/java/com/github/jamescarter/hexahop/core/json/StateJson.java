@@ -11,6 +11,7 @@ import playn.core.Json.Array;
 import playn.core.Json.Object;
 import playn.core.Json.Writer;
 import playn.core.PlayN;
+import tripleplay.anim.Animator;
 
 public class StateJson<T> {
 	public static final String STORAGE_KEY_MAP = "mapProgress";
@@ -18,11 +19,11 @@ public class StateJson<T> {
 	private int par;
 	private Location start;
 
-	public StateJson(Class<T> type, TileGrid<T> tileGrid, Object baseJsonObj, String storageStatusKey) {
-		this(type, tileGrid, baseJsonObj, storageStatusKey, false);
+	public StateJson(Class<T> type, TileGrid<T> tileGrid, Animator anim, Object baseJsonObj, String storageStatusKey) {
+		this(type, tileGrid, anim, baseJsonObj, storageStatusKey, false);
 	}
 
-	public StateJson(Class<T> type, TileGrid<T> tileGrid, Object baseJsonObj, String storageStatusKey, boolean cloneBase) {
+	public StateJson(Class<T> type, TileGrid<T> tileGrid, Animator anim, Object baseJsonObj, String storageStatusKey, boolean cloneBase) {
 		String statusJsonString = PlayN.storage().getItem(storageStatusKey);
 
 		if (statusJsonString == null) {
@@ -58,7 +59,7 @@ public class StateJson<T> {
 					baseValueList.add(null);
 				} else {
 					if (type == Tile.class) {
-						baseValueList.add((T) Tile.newTile(tileGrid, new Location(col, row), baseValue, 0));
+						baseValueList.add((T) Tile.newTile(tileGrid, new Location(col, row), anim, baseValue, 0));
 					} else {
 						baseValueList.add((T) baseValue);
 					}
@@ -71,7 +72,7 @@ public class StateJson<T> {
 						statusValueList.add(null);
 					}
 				} else {
-					statusValueList.add(Tile.newTile(tileGrid, new Location(col, row), statusValueArray.getInt(col), baseValue));
+					statusValueList.add(Tile.newTile(tileGrid, new Location(col, row), anim, statusValueArray.getInt(col), baseValue));
 				}
 			}
 

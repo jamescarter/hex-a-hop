@@ -37,6 +37,7 @@ public class LevelTileGridTest {
 		new StateJson<Tile>(
 			Tile.class,
 			levelTileGrid,
+			null,
 			PlayN.json().parse(PlayN.assets().getTextSync("test/levels/test-001.json")),
 			"levelTileGridTest",
 			true
