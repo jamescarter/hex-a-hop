@@ -3,9 +3,6 @@ package com.github.jamescarter.hexahop.core.screen;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
-import input.LevelKeyboard;
-import input.LevelMouse;
-import input.LevelTouch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +12,9 @@ import com.github.jamescarter.hexahop.core.callback.MapLoadCallback;
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
+import com.github.jamescarter.hexahop.core.input.LevelKeyboard;
+import com.github.jamescarter.hexahop.core.input.LevelMouse;
+import com.github.jamescarter.hexahop.core.input.LevelTouch;
 import com.github.jamescarter.hexahop.core.json.StateJson;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.player.Direction;

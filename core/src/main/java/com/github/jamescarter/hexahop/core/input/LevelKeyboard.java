@@ -1,4 +1,4 @@
-package input;
+package com.github.jamescarter.hexahop.core.input;
 
 import static playn.core.PlayN.assets;
 

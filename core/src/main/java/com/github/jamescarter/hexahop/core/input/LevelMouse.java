@@ -1,4 +1,4 @@
-package input;
+package com.github.jamescarter.hexahop.core.input;
 
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.player.Direction;
