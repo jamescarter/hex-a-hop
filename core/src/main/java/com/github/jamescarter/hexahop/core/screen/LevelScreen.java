@@ -133,7 +133,7 @@ public class LevelScreen extends GridLoader {
 		});
 	}
 
-	private void move(Direction direction) {
+	public void move(Direction direction) {
 		if (player.visible() && levelTileGrid.canMove(player.location(), direction)) {
 			moveList.add(player.location().clone());
 
@@ -148,7 +148,7 @@ public class LevelScreen extends GridLoader {
 
 	 * @return true if there are more moves to undo, otherwise false.
 	 */
-	private boolean undo() {
+	public boolean undo() {
 		if (moveList.size() <= 1) {
 			return false;
 		}
@@ -158,7 +158,7 @@ public class LevelScreen extends GridLoader {
 		if (!player.visible()) {
 			player.setVisible(true);
 		} else {
-			Tile statusTile = getTile(player.location());
+			Tile statusTile = levelTileGrid.statusAt(player.location());
 
 			if (statusTile != null) {
 				statusTile.undo();
@@ -167,7 +167,7 @@ public class LevelScreen extends GridLoader {
 
 		player.jumpTo(location, true);
 
-		getTile(player.location()).undo();
+		levelTileGrid.statusAt(player.location()).undo();
 
 		return true;
 	}
@@ -190,21 +190,8 @@ public class LevelScreen extends GridLoader {
 		}
 	}
 
-	private Tile getTile(Location location) {
-		int colPosition = getColPosition(location.col(), 0);
-		int rowPosition = getRowPosition(location.row(), location.col(), 0);
-
-		for (int i=0; i<getGridLayer().size(); i++) {
-			Layer layer = getGridLayer().get(i);
-
-			if (layer instanceof Tile) {
-				if (layer.tx() == colPosition && layer.ty() == rowPosition) {
-					return (Tile) layer;
-				}
-			}
-		}
-
-		return null;
+	public Location player() {
+		return player.location();
 	}
 
 	public void complete() {
