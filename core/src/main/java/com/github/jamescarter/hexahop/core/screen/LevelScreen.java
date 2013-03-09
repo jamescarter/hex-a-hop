@@ -3,6 +3,10 @@ package com.github.jamescarter.hexahop.core.screen;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
 
+import input.LevelKeyboard;
+import input.LevelMouse;
+import input.LevelTouch;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +21,9 @@ import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
 import com.github.jamescarter.hexahop.core.tile.Tile;
 
-import playn.core.Keyboard.Event;
 import playn.core.ImageLayer;
-import playn.core.Keyboard;
 import playn.core.Layer;
-import playn.core.Mouse;
-import playn.core.Mouse.ButtonEvent;
 import playn.core.PlayN;
-import playn.core.Touch;
 
 public class LevelScreen extends GridLoader {
 	private final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
@@ -66,71 +65,9 @@ public class LevelScreen extends GridLoader {
 			((480 - (getTileGrid().rows() * 36)) / 2) - 36
 		);
 
-		bgLayer.addListener(new Mouse.LayerAdapter() {
-			@Override
-			public void onMouseDown(ButtonEvent event) {
-				Location location = getGridLocation(event.x(), event.y());
-
-				Direction direction = player.location().to(location);
-
-				move(direction);
-			}
-		});
-
-		bgLayer.addListener(new Touch.LayerAdapter() {
-			private Touch.Event touchStart;
-
-			@Override
-			public void onTouchStart(Touch.Event touch) {
-				touchStart = touch;
-			}
-
-			@Override
-			public void onTouchEnd(Touch.Event touchEnd) {
-				move(
-					getGridLocation(touchStart.x(), touchStart.y()).to(
-						getGridLocation(touchEnd.x(), touchEnd.y())
-					)
-				);
-			}
-		});
-
-		PlayN.keyboard().setListener(new Keyboard.Adapter() {
-			@Override
-			public void onKeyDown(Event event) {
-				switch(event.key()) {
-					case U:
-					case Z:
-					case BACK:
-						undo();
-					break;
-					case UP:
-					case W:
-						move(Direction.NORTH);
-					break;
-					case DOWN:
-					case S:
-						move(Direction.SOUTH);
-					break;
-					case Q:
-						move(Direction.NORTH_WEST);
-					break;
-					case E:
-						move(Direction.NORTH_EAST);
-					break;
-					case A:
-						move(Direction.SOUTH_WEST);
-					break;
-					case D:
-						move(Direction.SOUTH_EAST);
-					break;
-					case ESCAPE:
-					case MENU:
-						backToMap();
-					default:
-				}
-			}
-		});
+		bgLayer.addListener(new LevelMouse(this));
+		bgLayer.addListener(new LevelTouch(this));
+		PlayN.keyboard().setListener(new LevelKeyboard(this));
 	}
 
 	public void move(Direction direction) {
@@ -196,10 +133,6 @@ public class LevelScreen extends GridLoader {
 
 	public void complete() {
 		assets().getText("levels/map.json", new MapLoadCallback(levelLocation, moveList.size() - 1 <= par));
-	}
-
-	private void backToMap() {
-		assets().getText("levels/map.json", new MapLoadCallback());
 	}
 
 	@Override
