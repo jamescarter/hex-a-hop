@@ -42,7 +42,7 @@ public class MapScreen extends GridLoader {
 		if (!mapJson.hasStatus()) {
 			Location start = mapJson.start();
 
-			mapTileGrid.setStatusAt(start, new MapStatusTile(start));
+			mapTileGrid.setStatusTileAt(start, new MapStatusTile(start));
 		}
 
 		if (completedLevelLocation != null) {
@@ -98,8 +98,8 @@ public class MapScreen extends GridLoader {
 				Location location = getGridLocation(event.x(), event.y());
 
 				// Make sure the level is activated before allowing the user to load it
-				if (mapTileGrid.statusAt(location) != null) {
-					assets().getText("levels/" + getLevelName(mapTileGrid.baseTileAt(location)) + ".json", new LevelLoadCallback(location));
+				if (mapTileGrid.statusTileAt(location) != null) {
+					assets().getText("levels/" + getLevelName(mapTileGrid.baseAt(location)) + ".json", new LevelLoadCallback(location));
 				}
 			}
 		});

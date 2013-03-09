@@ -23,7 +23,7 @@ public abstract class TileGrid<T> {
 		return gridStatusMap.get(0).size();
 	}
 
-	public T baseTileAt(Location location) {
+	public T baseAt(Location location) {
 		if (isOutOfBounds(location)) {
 			return null;
 		}
@@ -31,7 +31,7 @@ public abstract class TileGrid<T> {
 		return baseGridMap.get(location.row()).get(location.col());
 	}
 
-	public Tile statusAt(Location location) {
+	public Tile statusTileAt(Location location) {
 		if (isOutOfBounds(location)) {
 			return null;
 		}
@@ -58,8 +58,8 @@ public abstract class TileGrid<T> {
 
 		newLocation.move(inDirection);
 
-		Tile currentStatusTile = statusAt(fromLocation);
-		Tile toStatusTile = statusAt(newLocation);
+		Tile currentStatusTile = statusTileAt(fromLocation);
+		Tile toStatusTile = statusTileAt(newLocation);
 
 		if (toStatusTile != null && (currentStatusTile == null || (toStatusTile.isWall() == currentStatusTile.isWall() && toStatusTile.isActive()))) {
 			return true;
@@ -85,11 +85,11 @@ public abstract class TileGrid<T> {
 			newLocation.move(direction);
 
 			if (isBase) {
-				if (baseTileAt(newLocation) != null) {
+				if (baseAt(newLocation) != null) {
 					locationList.add(newLocation);
 				}
 			} else {
-				Tile statusTile = statusAt(newLocation);
+				Tile statusTile = statusTileAt(newLocation);
 
 				if (statusTile != null && statusTile.isActive()) {
 					locationList.add(newLocation);
@@ -100,11 +100,11 @@ public abstract class TileGrid<T> {
 		return locationList;
 	}
 
-	public void setStatusAt(Location location, Tile newStatus) {
+	public void setStatusTileAt(Location location, Tile newStatus) {
 		gridStatusMap.get(location.row()).set(location.col(), newStatus);
 	}
 
-	public void setBaseRowTileList(int row, List<T> tileList) {
+	public void setBaseRowList(int row, List<T> tileList) {
 		baseGridMap.put(row, tileList);
 	}
 

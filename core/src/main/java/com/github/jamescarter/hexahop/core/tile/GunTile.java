@@ -35,7 +35,7 @@ public class GunTile extends Tile {
 				break;
 			}
 
-			statusTile = tileGrid.statusAt(lineLocation);
+			statusTile = tileGrid.statusTileAt(lineLocation);
 		} while (statusTile == null || !statusTile.isActive());
 
 		if (statusTile != null) {
@@ -45,7 +45,7 @@ public class GunTile extends Tile {
 
 			if (statusTile instanceof GunTile) {
 				for (Location location : tileGrid.statusConnectedTo(lineLocation)) {
-					statusTile = tileGrid.statusAt(location);
+					statusTile = tileGrid.statusTileAt(location);
 
 					statusTile.deactivate();
 

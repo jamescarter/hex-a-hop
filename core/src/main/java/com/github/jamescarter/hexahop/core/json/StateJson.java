@@ -76,7 +76,7 @@ public class StateJson<T> {
 				}
 			}
 
-			tileGrid.setBaseRowTileList(row, baseValueList);
+			tileGrid.setBaseRowList(row, baseValueList);
 			tileGrid.setRowTileList(row, statusValueList);
 		}
 	}

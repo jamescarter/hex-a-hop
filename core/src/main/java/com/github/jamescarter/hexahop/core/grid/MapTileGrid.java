@@ -5,7 +5,7 @@ import com.github.jamescarter.hexahop.core.tile.MapStatusTile;
 
 public class MapTileGrid extends TileGrid<Integer> {
 	public void unlockConnected(Location levelLocation, boolean par) {
-		MapStatusTile statusTile = (MapStatusTile)statusAt(levelLocation);
+		MapStatusTile statusTile = (MapStatusTile)statusTileAt(levelLocation);
 
 		if (par) {
 			statusTile.perfect();
@@ -14,10 +14,10 @@ public class MapTileGrid extends TileGrid<Integer> {
 		}
 
 		for (Location location : baseConnectedTo(levelLocation)) {
-			if (statusAt(location) == null) {
+			if (statusTileAt(location) == null) {
 				// Ignore the "join" tiles
-				if (baseTileAt(location) > 0) {
-					setStatusAt(location, new MapStatusTile(location));
+				if (baseAt(location) > 0) {
+					setStatusTileAt(location, new MapStatusTile(location));
 				}
 			}
 		}

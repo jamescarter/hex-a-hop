@@ -137,7 +137,7 @@ public class LevelScreen extends GridLoader {
 		if (player.visible() && levelTileGrid.canMove(player.location(), direction)) {
 			moveList.add(player.location().clone());
 
-			levelTileGrid.statusAt(player.location()).stepOff();
+			levelTileGrid.statusTileAt(player.location()).stepOff();
 
 			player.move(direction);
 		}
@@ -158,7 +158,7 @@ public class LevelScreen extends GridLoader {
 		if (!player.visible()) {
 			player.setVisible(true);
 		} else {
-			Tile statusTile = levelTileGrid.statusAt(player.location());
+			Tile statusTile = levelTileGrid.statusTileAt(player.location());
 
 			if (statusTile != null) {
 				statusTile.undo();
@@ -167,13 +167,13 @@ public class LevelScreen extends GridLoader {
 
 		player.jumpTo(location, true);
 
-		levelTileGrid.statusAt(player.location()).undo();
+		levelTileGrid.statusTileAt(player.location()).undo();
 
 		return true;
 	}
 
 	public void stepOnTile(Location location, Direction direction) {
-		Tile statusTile = levelTileGrid.statusAt(location);
+		Tile statusTile = levelTileGrid.statusTileAt(location);
 
 		if (statusTile == null || !statusTile.isActive()) {
 			player.setVisible(false);
@@ -181,7 +181,7 @@ public class LevelScreen extends GridLoader {
 			Location endLocation = statusTile.stepOn(direction);
 
 			if (endLocation == null) {
-				if (!levelTileGrid.statusAt(location).isActive()) {
+				if (!levelTileGrid.statusTileAt(location).isActive()) {
 					player.setVisible(false);
 				}
 			} else {

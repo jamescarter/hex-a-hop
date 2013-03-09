@@ -52,20 +52,20 @@ public class LevelTileGridTest {
 
 	@Test
 	public void testBaseTileAt() {
-		assertTrue(levelTileGrid.baseTileAt(new Location(1, 3)) instanceof CollapsableTile);
-		assertTrue(levelTileGrid.baseTileAt(new Location(6, 6)) instanceof Collapsable2Tile);
-		assertTrue(levelTileGrid.baseTileAt(new Location(8, 0)) instanceof GunTile);
-		assertTrue(levelTileGrid.baseTileAt(new Location(0, 4)) instanceof StoneTile);
-		assertTrue(levelTileGrid.baseTileAt(new Location(2, 4)) instanceof TrampolineTile);
+		assertTrue(levelTileGrid.baseAt(new Location(1, 3)) instanceof CollapsableTile);
+		assertTrue(levelTileGrid.baseAt(new Location(6, 6)) instanceof Collapsable2Tile);
+		assertTrue(levelTileGrid.baseAt(new Location(8, 0)) instanceof GunTile);
+		assertTrue(levelTileGrid.baseAt(new Location(0, 4)) instanceof StoneTile);
+		assertTrue(levelTileGrid.baseAt(new Location(2, 4)) instanceof TrampolineTile);
 	}
 
 	@Test
 	public void testStatusAt() {
-		assertTrue(levelTileGrid.statusAt(new Location(1, 3)) instanceof CollapsableTile);
-		assertTrue(levelTileGrid.statusAt(new Location(6, 6)) instanceof Collapsable2Tile);
-		assertTrue(levelTileGrid.statusAt(new Location(8, 0)) instanceof GunTile);
-		assertTrue(levelTileGrid.statusAt(new Location(0, 4)) instanceof StoneTile);
-		assertTrue(levelTileGrid.statusAt(new Location(2, 4)) instanceof TrampolineTile);
+		assertTrue(levelTileGrid.statusTileAt(new Location(1, 3)) instanceof CollapsableTile);
+		assertTrue(levelTileGrid.statusTileAt(new Location(6, 6)) instanceof Collapsable2Tile);
+		assertTrue(levelTileGrid.statusTileAt(new Location(8, 0)) instanceof GunTile);
+		assertTrue(levelTileGrid.statusTileAt(new Location(0, 4)) instanceof StoneTile);
+		assertTrue(levelTileGrid.statusTileAt(new Location(2, 4)) instanceof TrampolineTile);
 	}
 
 	@Test
