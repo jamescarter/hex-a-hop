@@ -1,5 +1,8 @@
 package com.github.jamescarter.hexahop.core.tile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import playn.core.PlayN;
 import tripleplay.anim.Animator;
 
@@ -10,9 +13,9 @@ import com.github.jamescarter.hexahop.core.player.Direction;
 
 public class Collapsable2Tile extends Tile {
 	private TileGrid<?> tileGrid;
+	private List<Tile> toggledTileList = new ArrayList<Tile>();
 	private boolean isWall;
 	private boolean isBreakable = false;
-	private boolean toggledExternalWalls = false;
 	private Animator anim;
 
 	public Collapsable2Tile(TileGrid<?> tileGrid, Location location, boolean isWall, Animator anim) {
@@ -70,8 +73,14 @@ public class Collapsable2Tile extends Tile {
 	@Override
 	public void undo() { 
 		if (isActive()) {
-			if (toggledExternalWalls) {
-				toggleExternalWalls2(false);
+			if (toggledTileList.size() > 0) {
+				for (Tile tile : toggledTileList) {
+					if (tile instanceof CollapsableTile) {
+						((CollapsableTile) tile).toggleWall();
+					} else if (tile instanceof Collapsable2Tile) {
+						((Collapsable2Tile) tile).toggleWall();
+					}
+				}
 			}
 
 			if (isBreakable) {
@@ -123,11 +132,10 @@ public class Collapsable2Tile extends Tile {
 			for (Tile tile : tileGrid.rowTileList(row)) {
 				if (tile != null && tile.isWall() == flag && tile.isActive() && tile instanceof CollapsableTile) {
 					((CollapsableTile) tile).toggleWall();
+					toggledTileList.add(tile);
 				}
 			}
 		}
-
-		toggledExternalWalls = flag;
 	}
 
 	private boolean containsBreakable(boolean isWall) {
@@ -158,12 +166,11 @@ public class Collapsable2Tile extends Tile {
 
 					if (!tile2.isBreakable()) {
 						tile2.toggleWall();
+						toggledTileList.add(tile);
 					}
 				}
 			}
 		}
-
-		toggledExternalWalls = flag;
 	}
 
 	private boolean containsBreakable2(boolean isWall) {
