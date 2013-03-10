@@ -137,6 +137,10 @@ public class LevelScreen extends GridLoader {
 		assets().getText("levels/map.json", new MapLoadCallback(levelLocation, moveList.size() - 1 <= par));
 	}
 
+	public void backToMenu() {
+		assets().getText("levels/map.json", new MapLoadCallback());
+	}
+
 	@Override
 	public TileGrid<Tile> getTileGrid() {
 		return levelTileGrid;

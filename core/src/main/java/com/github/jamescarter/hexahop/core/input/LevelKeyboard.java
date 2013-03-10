@@ -1,8 +1,5 @@
 package com.github.jamescarter.hexahop.core.input;
 
-import static playn.core.PlayN.assets;
-
-import com.github.jamescarter.hexahop.core.callback.MapLoadCallback;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.screen.LevelScreen;
 
@@ -44,12 +41,9 @@ public class LevelKeyboard extends Keyboard.Adapter {
 			case D:
 				level.move(Direction.SOUTH_EAST);
 			break;
-			case F:
-				level.complete();
-			break;
 			case ESCAPE:
 			case MENU:
-				assets().getText("levels/map.json", new MapLoadCallback());
+				level.backToMenu();
 			default:
 		}
 	}
