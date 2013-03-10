@@ -48,6 +48,8 @@ public class LevelScreen extends GridLoader {
 		par = levelJson.par();
 		player = new Player(this, levelJson.start());
 		moveList.add(levelJson.start());
+
+		stepOnTile(player.location(), Direction.SOUTH);
 	}
 
 	public int par() {
