@@ -52,7 +52,7 @@ public class Collapsable2Tile extends Tile {
 
 			if (!containsBreakable(false)) {
 				if (containsBreakable(true)) {
-					toggleExternalWalls(true);
+					toggleExternalWalls();
 				} else {
 					((LevelTileGrid)tileGrid).complete();
 				}
@@ -64,7 +64,7 @@ public class Collapsable2Tile extends Tile {
 
 			if (!containsBreakable2(false)) {
 				if (containsBreakable2(true)) {
-					toggleExternalWalls2(true);
+					toggleExternalWalls2();
 				}
 			}
 		}
@@ -81,6 +81,8 @@ public class Collapsable2Tile extends Tile {
 						((Collapsable2Tile) tile).toggleWall();
 					}
 				}
+
+				toggledTileList.clear();
 			}
 
 			if (isBreakable) {
@@ -127,10 +129,10 @@ public class Collapsable2Tile extends Tile {
 		}
 	}
 
-	private void toggleExternalWalls(boolean flag) {
+	private void toggleExternalWalls() {
 		for (int row=0; row<tileGrid.rows(); row++) {
 			for (Tile tile : tileGrid.rowTileList(row)) {
-				if (tile != null && tile.isWall() == flag && tile.isActive() && tile instanceof CollapsableTile) {
+				if (tile != null && tile.isWall() && tile.isActive() && tile instanceof CollapsableTile) {
 					((CollapsableTile) tile).toggleWall();
 					toggledTileList.add(tile);
 				}
@@ -158,10 +160,10 @@ public class Collapsable2Tile extends Tile {
 		return false;
 	}
 
-	private void toggleExternalWalls2(boolean flag) {
+	private void toggleExternalWalls2() {
 		for (int row=0; row<tileGrid.rows(); row++) {
 			for (Tile tile : tileGrid.rowTileList(row)) {
-				if (tile != null && tile.isWall() == flag && tile.isActive() && tile instanceof Collapsable2Tile) {
+				if (tile != null && tile.isWall() && tile.isActive() && tile instanceof Collapsable2Tile) {
 					Collapsable2Tile tile2 = (Collapsable2Tile) tile;
 
 					if (!tile2.isBreakable()) {
