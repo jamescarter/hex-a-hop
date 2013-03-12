@@ -16,10 +16,14 @@ public class LevelMouse extends Mouse.LayerAdapter {
 
 	@Override
 	public void onMouseDown(ButtonEvent event) {
-		Location location = level.getGridLocation(event.x(), event.y());
+		if (event.button() == Mouse.BUTTON_LEFT) {
+			Location location = level.getGridLocation(event.x(), event.y());
 
-		Direction direction = level.player().to(location);
+			Direction direction = level.player().to(location);
 
-		level.move(direction);
+			level.move(direction);
+		} else {
+			level.undo();
+		}
 	}
 }

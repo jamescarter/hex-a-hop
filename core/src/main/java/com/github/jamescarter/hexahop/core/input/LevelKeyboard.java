@@ -21,23 +21,29 @@ public class LevelKeyboard extends Keyboard.Adapter {
 			case BACK:
 				level.undo();
 			break;
-			case UP:
+			case NP8:
 			case W:
+			case UP:
 				level.move(Direction.NORTH);
 			break;
-			case DOWN:
+			case NP2:
 			case S:
+			case DOWN:
 				level.move(Direction.SOUTH);
 			break;
+			case NP7:
 			case Q:
 				level.move(Direction.NORTH_WEST);
 			break;
+			case NP9:
 			case E:
 				level.move(Direction.NORTH_EAST);
 			break;
+			case NP1:
 			case A:
 				level.move(Direction.SOUTH_WEST);
 			break;
+			case NP3:
 			case D:
 				level.move(Direction.SOUTH_EAST);
 			break;
