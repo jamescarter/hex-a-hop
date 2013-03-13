@@ -12,8 +12,7 @@ namespace com.github.jamescarter.hexahop
   public partial class AppDelegate : IOSApplicationDelegate {
     public override bool FinishedLaunching (UIApplication app, NSDictionary options) {
       app.SetStatusBarHidden(true, true);
-      var pf = IOSPlatform.register(app, IOSPlatform.SupportedOrients.PORTRAITS);
-      pf.assets().setPathPrefix("assets");
+      IOSPlatform.register(app, IOSPlatform.SupportedOrients.PORTRAITS);
       PlayN.run(new HexAHop(true));
       return true;
     }

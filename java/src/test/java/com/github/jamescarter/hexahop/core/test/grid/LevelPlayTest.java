@@ -18,8 +18,7 @@ import com.github.jamescarter.hexahop.core.tile.Tile;
 
 public class LevelPlayTest {
 	static {
-		JavaPlatform platform = JavaPlatform.register();
-		platform.assets().setPathPrefix("com/github/jamescarter/hexahop/resources");
+		JavaPlatform.register();
 	}
 
 	private LevelScreen level2;

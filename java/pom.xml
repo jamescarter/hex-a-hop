@@ -20,6 +20,12 @@
   <dependencies>
     <dependency>
       <groupId>com.github.jamescarter.hexahop</groupId>
+      <artifactId>hexahop-assets</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.jamescarter.hexahop</groupId>
       <artifactId>hexahop-core</artifactId>
       <version>${project.version}</version>
     </dependency>

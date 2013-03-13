@@ -8,8 +8,6 @@ import com.github.jamescarter.hexahop.core.HexAHop;
 public class HexAHopActivity extends GameActivity {
 	@Override
 	public void main() {
-		platform().assets().setPathPrefix("com/github/jamescarter/hexahop/resources");
-
 		PlayN.run(new HexAHop(true));
 	}
 

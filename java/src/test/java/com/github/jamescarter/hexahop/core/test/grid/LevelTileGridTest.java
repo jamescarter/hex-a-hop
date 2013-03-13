@@ -22,8 +22,7 @@ import com.github.jamescarter.hexahop.core.tile.TrampolineTile;
 
 public class LevelTileGridTest {
 	static {
-		JavaPlatform platform = JavaPlatform.register();
-		platform.assets().setPathPrefix("com/github/jamescarter/hexahop/resources");
+		JavaPlatform.register();
 	}
 
 	private LevelTileGrid levelTileGrid;

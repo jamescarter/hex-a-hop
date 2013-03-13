@@ -7,3 +7,7 @@
 /*/target/
 /android/bin
 /android/gen
+/android/assets
+/android/project.properties
+/ios/assets
+/ios/hexahop.suo
