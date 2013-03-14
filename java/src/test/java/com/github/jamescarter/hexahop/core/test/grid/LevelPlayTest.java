@@ -23,11 +23,13 @@ public class LevelPlayTest {
 
 	private LevelScreen level2;
 	private LevelScreen level3;
+	private LevelScreen level4;
 
 	@Before
 	public void setUp() throws JsonParserException, Exception {
 		level2 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-002.json"));
 		level3 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-003.json"));
+		level4 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-004.json"));
 	}
 
 	@Test
@@ -94,5 +96,17 @@ public class LevelPlayTest {
 		for (Tile tile : tileList) {
 			assertTrue(tile.isWall());
 		}
+	}
+
+	@Test
+	public void testGunTile() {
+		level4.move(Direction.NORTH_EAST);
+		level4.move(Direction.NORTH_EAST);
+
+		assertFalse(level4.getTileGrid().statusTileAt(new Location(3, 1)).isActive());
+		assertTrue(level4.getTileGrid().statusTileAt(new Location(3, 0)).isActive());
+		assertTrue(level4.getTileGrid().statusTileAt(new Location(3, 2)).isActive());
+		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 1)).isActive());
+		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 2)).isActive());
 	}
 }

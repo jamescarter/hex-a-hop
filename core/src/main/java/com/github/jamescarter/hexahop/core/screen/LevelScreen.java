@@ -58,8 +58,6 @@ public class LevelScreen extends GridLoader {
 
 	@Override
 	public void wasShown() {
-		super.wasShown();
-
 		getGridLayer().add(player);
 
 		getGridLayer().setTranslation(
@@ -74,6 +72,8 @@ public class LevelScreen extends GridLoader {
 
 	public void move(Direction direction) {
 		if (player.visible() && levelTileGrid.canMove(player.location(), direction)) {
+			finishAnimation();
+
 			moveList.add(player.location().clone());
 
 			levelTileGrid.statusTileAt(player.location()).stepOff();
@@ -126,6 +126,12 @@ public class LevelScreen extends GridLoader {
 			} else {
 				player.jumpTo(endLocation, false);
 			}
+		}
+	}
+
+	public void finishAnimation() {
+		for (int i=1; i<=2; i++) {
+			anim.update(500 * i);
 		}
 	}
 
