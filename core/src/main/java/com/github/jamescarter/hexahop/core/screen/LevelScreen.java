@@ -32,6 +32,7 @@ public class LevelScreen extends GridLoader {
 	private LevelTileGrid levelTileGrid = new LevelTileGrid(this);
 	private int par;
 	private Player player;
+	private boolean drownedInPlace;
 
 	public LevelScreen(Location location, String levelJsonString) {
 		this.levelLocation = location;
@@ -94,14 +95,18 @@ public class LevelScreen extends GridLoader {
 
 		Location location = moveList.remove(moveList.size() - 1);
 
-		if (!player.visible()) {
-			player.setVisible(true);
-		} else {
+		if (drownedInPlace || player.visible()) {
 			Tile statusTile = levelTileGrid.statusTileAt(player.location());
 
 			if (statusTile != null) {
 				statusTile.undo();
 			}
+
+			drownedInPlace = false;
+		}
+
+		if (!player.visible()) {
+			player.setVisible(true);
 		}
 
 		player.jumpTo(location, true);
@@ -122,6 +127,7 @@ public class LevelScreen extends GridLoader {
 			if (endLocation == null) {
 				if (!levelTileGrid.statusTileAt(location).isActive()) {
 					player.setVisible(false);
+					drownedInPlace = true;
 				}
 			} else {
 				player.jumpTo(endLocation, false);
@@ -130,7 +136,7 @@ public class LevelScreen extends GridLoader {
 	}
 
 	public void finishAnimation() {
-		for (int i=1; i<=2; i++) {
+		for (int i=1; i<=4; i++) {
 			anim.update(500 * i);
 		}
 	}

@@ -24,12 +24,14 @@ public class LevelPlayTest {
 	private LevelScreen level2;
 	private LevelScreen level3;
 	private LevelScreen level4;
+	private LevelScreen level5;
 
 	@Before
 	public void setUp() throws JsonParserException, Exception {
 		level2 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-002.json"));
 		level3 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-003.json"));
 		level4 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-004.json"));
+		level5 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-005.json"));
 	}
 
 	@Test
@@ -103,10 +105,61 @@ public class LevelPlayTest {
 		level4.move(Direction.NORTH_EAST);
 		level4.move(Direction.NORTH_EAST);
 
+		level4.finishAnimation();
+
 		assertFalse(level4.getTileGrid().statusTileAt(new Location(3, 1)).isActive());
 		assertTrue(level4.getTileGrid().statusTileAt(new Location(3, 0)).isActive());
 		assertTrue(level4.getTileGrid().statusTileAt(new Location(3, 2)).isActive());
 		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 1)).isActive());
 		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 2)).isActive());
+	}
+
+	@Test
+	public void testGunTileUndoExplodedStandingOn() {
+		level4.move(Direction.NORTH_EAST);
+		level4.move(Direction.NORTH_EAST);
+		level4.move(Direction.SOUTH_EAST);
+
+		level4.finishAnimation();
+
+		assertFalse(level4.getTileGrid().statusTileAt(new Location(3, 2)).isActive());
+		assertFalse(level4.getTileGrid().statusTileAt(new Location(4, 2)).isActive());
+		assertFalse(level4.getTileGrid().statusTileAt(new Location(4, 3)).isActive());
+
+		assertTrue(level4.undo());
+
+		assertTrue(level4.getTileGrid().statusTileAt(new Location(3, 2)).isActive());
+		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 2)).isActive());
+		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 3)).isActive());
+	}
+
+	@Test
+	public void testTrampoline() {
+		level5.move(Direction.SOUTH_EAST);
+		level5.move(Direction.SOUTH_EAST);
+
+		level5.finishAnimation();
+
+		assertEquals(new Location(4, 2), level5.player());
+	}
+
+	@Test
+	public void testUndoAfterDrown() {
+		testTrampoline();
+
+		level5.move(Direction.NORTH_WEST);
+		level5.move(Direction.NORTH_WEST);
+
+		level5.finishAnimation();
+
+		Tile statusTile = level5.getTileGrid().statusTileAt(new Location(0, 0));
+
+		assertEquals(statusTile.location(), level5.player());
+
+		assertFalse(statusTile.isActive());
+
+		level5.undo();
+
+		assertFalse(statusTile.isActive());
 	}
 }
