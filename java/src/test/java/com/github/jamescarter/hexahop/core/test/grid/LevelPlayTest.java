@@ -24,6 +24,7 @@ public class LevelPlayTest {
 	private LevelScreen level3;
 	private LevelScreen level4;
 	private LevelScreen level5;
+	private LevelScreen level6;
 
 	@Before
 	public void setUp() throws JsonParserException, Exception {
@@ -31,6 +32,7 @@ public class LevelPlayTest {
 		level3 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-003.json"));
 		level4 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-004.json"));
 		level5 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-005.json"));
+		level6 = new LevelScreen(new Location(0, 0), PlayN.assets().getTextSync("test/levels/test-006.json"));
 	}
 
 	@Test
@@ -234,5 +236,24 @@ public class LevelPlayTest {
 		level5.undo();
 
 		assertFalse(statusTile.isActive());
+	}
+
+	@Test
+	public void testUndoAfterWallToggleFromCollapsable2() {
+		Tile statusTile = level6.getTileGrid().statusTileAt(new Location(1, 0));
+
+		level6.move(Direction.SOUTH_WEST);
+		level6.move(Direction.NORTH_EAST);
+
+		assertTrue(statusTile.isWall());
+
+		level6.move(Direction.NORTH);
+
+		assertFalse(statusTile.isWall());
+
+		level6.undo();
+		level6.finishAnimation();
+
+		assertTrue(statusTile.isWall());
 	}
 }

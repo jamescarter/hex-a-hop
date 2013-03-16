@@ -76,20 +76,20 @@ public class Collapsable2Tile extends Tile {
 	}
 
 	@Override
-	public void undo() { 
-		if (isActive()) {
-			if (toggledTileList.size() > 0) {
-				for (Tile tile : toggledTileList) {
-					if (tile instanceof CollapsableTile) {
-						((CollapsableTile) tile).toggleWall();
-					} else if (tile instanceof Collapsable2Tile) {
-						((Collapsable2Tile) tile).toggleWall();
-					}
+	public void undo() {
+		if (toggledTileList.size() > 0) {
+			for (Tile tile : toggledTileList) {
+				if (tile instanceof CollapsableTile) {
+					((CollapsableTile) tile).toggleWall();
+				} else if (tile instanceof Collapsable2Tile) {
+					((Collapsable2Tile) tile).toggleWall();
 				}
-
-				toggledTileList.clear();
 			}
 
+			toggledTileList.clear();
+		}
+
+		if (isActive()) {
 			if (isBreakable) {
 				if (isStoodOn) {
 					isStoodOn = false;
