@@ -81,13 +81,17 @@ public class LevelScreen extends GridLoader {
 	public void move(Direction direction) {
 		finishAnimation();
 
-		if (player.visible() && levelTileGrid.canMove(player.location(), direction)) {
-			moveList.add(player.location().clone());
-			directionList.add(direction);
+		if (player.visible()) {
+			if (levelTileGrid.canMove(player.location(), direction)) {
+				moveList.add(player.location().clone());
+				directionList.add(direction);
 
-			levelTileGrid.statusTileAt(player.location()).stepOff();
+				levelTileGrid.statusTileAt(player.location()).stepOff();
 
-			player.move(direction);
+				player.move(direction);
+			} else {
+				player.look(direction);
+			}
 		}
 	}
 

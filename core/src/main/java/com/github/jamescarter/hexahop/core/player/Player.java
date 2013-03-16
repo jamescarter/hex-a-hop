@@ -55,6 +55,12 @@ public class Player extends ImageLayerGL {
 		animateMove(isUndo);
 	}
 
+	public void look(Direction direction) {
+		this.direction = direction;
+
+		setImage(Position.STANDING);
+	}
+
 	public Location location() {
 		return location;
 	}
