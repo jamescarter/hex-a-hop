@@ -49,7 +49,7 @@ public class LevelKeyboard extends Keyboard.Adapter {
 			break;
 			case ESCAPE:
 			case MENU:
-				level.backToMenu();
+				level.backToMap();
 			default:
 		}
 	}

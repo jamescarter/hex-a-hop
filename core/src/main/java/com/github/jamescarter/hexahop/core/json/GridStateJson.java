@@ -13,17 +13,17 @@ import playn.core.Json.Writer;
 import playn.core.PlayN;
 import tripleplay.anim.Animator;
 
-public class StateJson<T> {
+public class GridStateJson<T> {
 	public static final String STORAGE_KEY_MAP = "mapProgress";
 	private boolean hasStatus = false;
 	private int par;
 	private Location start;
 
-	public StateJson(Class<T> type, TileGrid<T> tileGrid, Animator anim, Object baseJsonObj, String storageStatusKey) {
+	public GridStateJson(Class<T> type, TileGrid<T> tileGrid, Animator anim, Object baseJsonObj, String storageStatusKey) {
 		this(type, tileGrid, anim, baseJsonObj, storageStatusKey, false);
 	}
 
-	public StateJson(Class<T> type, TileGrid<T> tileGrid, Animator anim, Object baseJsonObj, String storageStatusKey, boolean cloneBase) {
+	public GridStateJson(Class<T> type, TileGrid<T> tileGrid, Animator anim, Object baseJsonObj, String storageStatusKey, boolean cloneBase) {
 		String statusJsonString = PlayN.storage().getItem(storageStatusKey);
 
 		if (statusJsonString == null) {

@@ -15,7 +15,8 @@ import com.github.jamescarter.hexahop.core.grid.TileGrid;
 import com.github.jamescarter.hexahop.core.input.LevelKeyboard;
 import com.github.jamescarter.hexahop.core.input.LevelMouse;
 import com.github.jamescarter.hexahop.core.input.LevelTouch;
-import com.github.jamescarter.hexahop.core.json.StateJson;
+import com.github.jamescarter.hexahop.core.json.LevelMoveJson;
+import com.github.jamescarter.hexahop.core.json.GridStateJson;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.player.Player;
@@ -29,6 +30,7 @@ public class LevelScreen extends GridLoader {
 	private final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
 	private Location levelLocation;
 	private List<Location> moveList = new ArrayList<Location>();
+	private List<Direction> directionList = new ArrayList<Direction>();
 	private LevelTileGrid levelTileGrid = new LevelTileGrid(this);
 	private int par;
 	private Player player;
@@ -37,7 +39,7 @@ public class LevelScreen extends GridLoader {
 	public LevelScreen(Location location, String levelJsonString) {
 		this.levelLocation = location;
 
-		StateJson<Tile> levelJson = new StateJson<Tile>(
+		GridStateJson<Tile> levelJson = new GridStateJson<Tile>(
 			Tile.class,
 			levelTileGrid,
 			anim,
@@ -51,6 +53,11 @@ public class LevelScreen extends GridLoader {
 		moveList.add(levelJson.start());
 
 		stepOnTile(player.location(), Direction.SOUTH);
+
+		// replay any previously saved moves
+		for (Direction direction : LevelMoveJson.retrieve(location)) {
+			move(direction);
+		}
 	}
 
 	public int par() {
@@ -72,10 +79,11 @@ public class LevelScreen extends GridLoader {
 	}
 
 	public void move(Direction direction) {
-		if (player.visible() && levelTileGrid.canMove(player.location(), direction)) {
-			finishAnimation();
+		finishAnimation();
 
+		if (player.visible() && levelTileGrid.canMove(player.location(), direction)) {
 			moveList.add(player.location().clone());
+			directionList.add(direction);
 
 			levelTileGrid.statusTileAt(player.location()).stepOff();
 
@@ -94,6 +102,7 @@ public class LevelScreen extends GridLoader {
 		}
 
 		Location location = moveList.remove(moveList.size() - 1);
+		directionList.remove(directionList.size() - 1);
 
 		if (drownedInPlace || player.visible()) {
 			Tile statusTile = levelTileGrid.statusTileAt(player.location());
@@ -136,7 +145,7 @@ public class LevelScreen extends GridLoader {
 	}
 
 	public void finishAnimation() {
-		for (int i=1; i<=4; i++) {
+		for (int i=1; i<=10; i++) {
 			anim.update(500 * i);
 		}
 	}
@@ -147,10 +156,12 @@ public class LevelScreen extends GridLoader {
 
 	public void complete() {
 		assets().getText("levels/map.json", new MapLoadCallback(levelLocation, moveList.size() - 1 <= par));
+		LevelMoveJson.clear(levelLocation);
 	}
 
-	public void backToMenu() {
+	public void backToMap() {
 		assets().getText("levels/map.json", new MapLoadCallback());
+		LevelMoveJson.store(levelLocation, directionList);
 	}
 
 	@Override

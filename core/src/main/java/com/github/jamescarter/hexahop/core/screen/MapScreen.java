@@ -19,7 +19,7 @@ import com.github.jamescarter.hexahop.core.callback.LevelLoadCallback;
 import com.github.jamescarter.hexahop.core.grid.GridLoader;
 import com.github.jamescarter.hexahop.core.grid.MapTileGrid;
 import com.github.jamescarter.hexahop.core.grid.TileGrid;
-import com.github.jamescarter.hexahop.core.json.StateJson;
+import com.github.jamescarter.hexahop.core.json.GridStateJson;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.tile.MapStatusTile;
 import com.github.jamescarter.hexahop.core.tile.Tile;
@@ -29,14 +29,14 @@ public class MapScreen extends GridLoader {
 	private final MapTileGrid mapTileGrid = new MapTileGrid();
 
 	public MapScreen(Location completedLevelLocation, boolean completedLevelPar, String mapJsonString) {
-		StateJson<Integer> mapJson = new StateJson<Integer>(
+		GridStateJson<Integer> mapJson = new GridStateJson<Integer>(
 			Integer.class,
 			mapTileGrid,
 			anim,
 			PlayN.json().parse(
 				mapJsonString
 			),
-			StateJson.STORAGE_KEY_MAP
+			GridStateJson.STORAGE_KEY_MAP
 		);
 
 		if (!mapJson.hasStatus()) {
@@ -48,7 +48,7 @@ public class MapScreen extends GridLoader {
 		if (completedLevelLocation != null) {
 			mapTileGrid.unlockConnected(completedLevelLocation, completedLevelPar);
 
-			StateJson.store(mapTileGrid, StateJson.STORAGE_KEY_MAP);
+			GridStateJson.store(mapTileGrid, GridStateJson.STORAGE_KEY_MAP);
 		}
 	}
 

@@ -10,7 +10,7 @@ import playn.core.json.JsonParserException;
 import playn.java.JavaPlatform;
 
 import com.github.jamescarter.hexahop.core.grid.LevelTileGrid;
-import com.github.jamescarter.hexahop.core.json.StateJson;
+import com.github.jamescarter.hexahop.core.json.GridStateJson;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.tile.Collapsable2Tile;
@@ -33,7 +33,7 @@ public class LevelTileGridTest {
 		levelTileGrid = new LevelTileGrid(null);
 		playerLocation = new Location(5, 4);
 
-		new StateJson<Tile>(
+		new GridStateJson<Tile>(
 			Tile.class,
 			levelTileGrid,
 			null,
