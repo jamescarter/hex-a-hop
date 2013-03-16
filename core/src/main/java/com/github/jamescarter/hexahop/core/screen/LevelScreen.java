@@ -97,6 +97,8 @@ public class LevelScreen extends GridLoader {
 	 * @return true if there are more moves to undo, otherwise false.
 	 */
 	public boolean undo() {
+		finishAnimation();
+
 		if (moveList.size() <= 1) {
 			return false;
 		}
@@ -119,8 +121,6 @@ public class LevelScreen extends GridLoader {
 		}
 
 		player.jumpTo(location, true);
-
-		levelTileGrid.statusTileAt(player.location()).undo();
 
 		return true;
 	}
@@ -145,8 +145,8 @@ public class LevelScreen extends GridLoader {
 	}
 
 	public void finishAnimation() {
-		for (int i=1; i<=10; i++) {
-			anim.update(500 * i);
+		for (int i=1; i<=30; i++) {
+			anim.update(2000 * i);
 		}
 	}
 

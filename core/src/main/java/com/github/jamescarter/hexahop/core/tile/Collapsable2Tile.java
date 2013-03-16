@@ -16,6 +16,7 @@ public class Collapsable2Tile extends Tile {
 	private List<Tile> toggledTileList = new ArrayList<Tile>();
 	private boolean isWall;
 	private boolean isBreakable = false;
+	private boolean isStoodOn = false;
 	private Animator anim;
 
 	public Collapsable2Tile(TileGrid<?> tileGrid, Location location, boolean isWall, Animator anim) {
@@ -41,6 +42,8 @@ public class Collapsable2Tile extends Tile {
 				setTileImage(TileImage.COLLAPSABLE2_ON);
 			}
 		}
+
+		isStoodOn = true;
 
 		return null;
 	}
@@ -68,8 +71,10 @@ public class Collapsable2Tile extends Tile {
 				}
 			}
 		}
+
+		isStoodOn = false;
 	}
-	
+
 	@Override
 	public void undo() { 
 		if (isActive()) {
@@ -86,14 +91,27 @@ public class Collapsable2Tile extends Tile {
 			}
 
 			if (isBreakable) {
-				if (isWall) {
-					setTileImage(TileImage.COLLAPSABLE_WALL);
-				} else {
-					setTileImage(TileImage.COLLAPSABLE);
-				}
+				if (isStoodOn) {
+					isStoodOn = false;
 
-				isBreakable = false;
+					if (isWall) {
+						setTileImage(TileImage.COLLAPSABLE_WALL);
+					} else {
+						setTileImage(TileImage.COLLAPSABLE);
+					}
+				} else {
+					isBreakable = false;
+					isStoodOn = true;
+
+					if (isWall) {
+						setTileImage(TileImage.COLLAPSABLE2_WALL_ON);
+					} else {
+						setTileImage(TileImage.COLLAPSABLE2_ON);
+					}
+				}
 			} else {
+				isStoodOn = false;
+
 				if (isWall) {
 					setTileImage(TileImage.COLLAPSABLE2_WALL);
 				} else {

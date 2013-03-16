@@ -52,14 +52,14 @@ public class Player extends ImageLayerGL {
 
 		setDepth(newLocation.row() - ((location.col() % 2 == 0) ? 0.3f : 0.1f));
 
-		animateMove();
+		animateMove(isUndo);
 	}
 
 	public Location location() {
 		return location;
 	}
 
-	private void animateMove() {
+	private void animateMove(final boolean isUndo) {
 		level.anim.action(new Runnable() {
 			@Override
 			public void run() {
@@ -73,7 +73,11 @@ public class Player extends ImageLayerGL {
 		}).then().delay(200).then().action(new Runnable() {
 			@Override
 			public void run() {
-				level.stepOnTile(location, direction);
+				if (isUndo) {
+					level.getTileGrid().statusTileAt(location()).undo();
+				} else {
+					level.stepOnTile(location, direction);
+				}
 			}
 		});
 	}

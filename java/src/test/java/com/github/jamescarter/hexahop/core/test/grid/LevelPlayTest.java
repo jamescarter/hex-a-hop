@@ -2,8 +2,6 @@ package com.github.jamescarter.hexahop.core.test.grid;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +12,7 @@ import playn.java.JavaPlatform;
 import com.github.jamescarter.hexahop.core.level.Location;
 import com.github.jamescarter.hexahop.core.player.Direction;
 import com.github.jamescarter.hexahop.core.screen.LevelScreen;
+import com.github.jamescarter.hexahop.core.tile.Collapsable2Tile;
 import com.github.jamescarter.hexahop.core.tile.Tile;
 
 public class LevelPlayTest {
@@ -64,14 +63,14 @@ public class LevelPlayTest {
 
 	@Test
 	public void testCollapsable2Undo2() {
-		ArrayList<Tile> tileList = new ArrayList<Tile>();
-
-		tileList.add(level3.getTileGrid().statusTileAt(new Location(2, 2)));
-		tileList.add(level3.getTileGrid().statusTileAt(new Location(2, 3)));
-		tileList.add(level3.getTileGrid().statusTileAt(new Location(3, 1)));
-		tileList.add(level3.getTileGrid().statusTileAt(new Location(3, 3)));
-		tileList.add(level3.getTileGrid().statusTileAt(new Location(4, 2)));
-		tileList.add(level3.getTileGrid().statusTileAt(new Location(4, 3)));
+		Tile[] tileList = {
+			level3.getTileGrid().statusTileAt(new Location(2, 2)),
+			level3.getTileGrid().statusTileAt(new Location(2, 3)),
+			level3.getTileGrid().statusTileAt(new Location(3, 1)),
+			level3.getTileGrid().statusTileAt(new Location(3, 3)),
+			level3.getTileGrid().statusTileAt(new Location(4, 2)),
+			level3.getTileGrid().statusTileAt(new Location(4, 3))
+		};
 
 		level3.move(Direction.NORTH_EAST);
 
@@ -87,6 +86,7 @@ public class LevelPlayTest {
 
 		// undo the last move that converted the walls to normal tiles
 		level3.undo();
+		level3.finishAnimation();
 
 		for (Tile tile : tileList) {
 			assertTrue(tile.isWall());
@@ -94,10 +94,43 @@ public class LevelPlayTest {
 
 		// undo the first move and confirm the gird has the original state when it was loaded
 		level3.undo();
+		level3.finishAnimation();
 
 		for (Tile tile : tileList) {
 			assertTrue(tile.isWall());
 		}
+	}
+
+	@Test
+	public void testCollapsable2Undo3() {
+		Collapsable2Tile tile2 = (Collapsable2Tile) level2.getTileGrid().statusTileAt(new Location(1, 5));
+
+		level2.move(Direction.SOUTH_EAST);
+
+		assertFalse(tile2.isBreakable());
+
+		level2.move(Direction.NORTH_WEST);
+
+		assertTrue(tile2.isBreakable());
+
+		level2.move(Direction.SOUTH_EAST);
+
+		assertTrue(tile2.isBreakable());
+
+		level2.undo();
+
+		assertTrue(tile2.isBreakable());
+
+		level2.move(Direction.SOUTH_EAST);
+
+		assertTrue(tile2.isBreakable());
+
+		level2.undo();
+		level2.undo();
+
+		level2.finishAnimation();
+
+		assertFalse(tile2.isBreakable());
 	}
 
 	@Test
@@ -131,6 +164,46 @@ public class LevelPlayTest {
 		assertTrue(level4.getTileGrid().statusTileAt(new Location(3, 2)).isActive());
 		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 2)).isActive());
 		assertTrue(level4.getTileGrid().statusTileAt(new Location(4, 3)).isActive());
+	}
+
+	@Test
+	public void testGunTileUndoAfterSteppingOff() {
+		level4.move(Direction.NORTH_EAST);
+		level4.move(Direction.NORTH_EAST);
+		level4.move(Direction.NORTH);
+
+		Tile destroyedTile = level4.getTileGrid().statusTileAt(new Location(3, 1));
+		Tile[] gunTiles = {
+			level4.getTileGrid().statusTileAt(new Location(2, 1)),
+			level4.getTileGrid().statusTileAt(new Location(2, 2)),
+			level4.getTileGrid().statusTileAt(new Location(3, 0)),
+			level4.getTileGrid().statusTileAt(new Location(3, 2)),
+			level4.getTileGrid().statusTileAt(new Location(4, 1)),
+			level4.getTileGrid().statusTileAt(new Location(4, 2)),
+			level4.getTileGrid().statusTileAt(new Location(4, 3))
+		};
+
+		assertFalse(destroyedTile.isActive());
+
+		for (Tile tile : gunTiles) {
+			assertTrue(tile.isActive());
+		}
+
+		level4.undo();
+		level4.finishAnimation();
+
+		for (Tile tile : gunTiles) {
+			assertTrue(tile.isActive());
+		}
+
+		level4.undo();
+		level4.finishAnimation();
+
+		assertTrue(destroyedTile.isActive());
+
+		for (Tile tile : gunTiles) {
+			assertTrue(tile.isActive());
+		}
 	}
 
 	@Test
