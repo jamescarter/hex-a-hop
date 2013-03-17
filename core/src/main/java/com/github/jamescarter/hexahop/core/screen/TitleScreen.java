@@ -40,10 +40,10 @@ public class TitleScreen extends Screen {
 		Font font = graphics().createFont("Helvetica", Font.Style.PLAIN, 22);
 
 		TextFormat format = new TextFormat().withFont(font);
-		TextLayout newGameLayout = graphics().layoutText("New Game", format);
+		TextLayout newGameLayout = graphics().layoutText("Play", format);
 		Layer newGameLayer = createTextLayer(newGameLayout, 0xFFFFFFFF);
 
-		newGameLayer.setTranslation(380, 200);
+		newGameLayer.setTranslation(420, 200);
 
 		bgLayer.addListener(new Pointer.Adapter() {
 			@Override
