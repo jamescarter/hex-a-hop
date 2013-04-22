@@ -5,15 +5,20 @@ import com.github.jamescarter.hexahop.core.screen.TitleScreen;
 
 import playn.core.Game;
 import playn.core.PlayN;
+import playn.core.util.Clock;
 
-public class HexAHop implements Game {
+public class HexAHop extends Game.Default {
 	public static float scaleY = 1.0f;
+	private static final int UPDATE_RATE = 50;
+	private Clock.Source clock = new Clock.Source(UPDATE_RATE);
 
 	public HexAHop() {
 		this(false);
 	}
 
 	public HexAHop(boolean scale) {
+		super(UPDATE_RATE);
+
 		if (scale) {
 			scaleY = (float) PlayN.graphics().screenHeight() / 480;
 
@@ -28,16 +33,15 @@ public class HexAHop implements Game {
 
 	@Override
 	public void paint(float alpha) {
-		HexScreen.screens.paint(alpha);
+		clock.paint(alpha);
+
+		HexScreen.screens.paint(clock);
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(int delta) {
+		clock.update(delta);
+
 		HexScreen.screens.update(delta);
-	}
-
-	@Override
-	public int updateRate() {
-		return 50;
 	}
 }

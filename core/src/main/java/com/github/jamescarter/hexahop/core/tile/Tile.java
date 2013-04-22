@@ -15,11 +15,12 @@ public abstract class Tile extends ImageLayerGL {
 	private boolean active = true;
 
 	public Tile(Location location, TileImage ti) {
-		super(graphics().ctx(), ti.getImage());
+		super(graphics().ctx());
 
 		this.id = ti.id();
 		this.location = location;
 
+		setImage(ti.getImage());
 		setDepth(location.row() - ((location.col() % 2 == 0) ? 0.4f : 0.2f));
 	}
 

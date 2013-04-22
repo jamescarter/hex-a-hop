@@ -16,9 +16,4 @@ public class HexScreen extends AnimScreen {
 	public void wasRemoved() {
 		layer.destroy();
 	}
-
-	@Override
-	protected float updateRate() {
-		return 50;
-	}
 }

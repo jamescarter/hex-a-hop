@@ -25,6 +25,7 @@ import com.github.jamescarter.hexahop.core.tile.Tile;
 import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.PlayN;
+import playn.core.util.Clock;
 
 public class LevelScreen extends GridLoader {
 	private final ImageLayer bgLayer = graphics().createImageLayer(assets().getImage("images/gradient.png"));
@@ -149,8 +150,12 @@ public class LevelScreen extends GridLoader {
 	}
 
 	public void finishAnimation() {
+		Clock.Source clock = new Clock.Source(50);
+
 		for (int i=1; i<=30; i++) {
-			anim.update(2000 * i);
+			clock.update(2000 * i);
+
+			anim.paint(clock);
 		}
 	}
 

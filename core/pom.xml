@@ -22,7 +22,7 @@
     <dependency>
       <groupId>com.threerings</groupId>
       <artifactId>tripleplay</artifactId>
-      <version>1.6</version>
+      <version>${playn.version}</version>
     </dependency>
   </dependencies>
 

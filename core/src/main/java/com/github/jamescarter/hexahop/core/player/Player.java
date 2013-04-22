@@ -17,7 +17,7 @@ public class Player extends ImageLayerGL {
 	private boolean left = true;
 
 	public Player(LevelScreen level, Location location) {
-		super(graphics().ctx(), null);
+		super(graphics().ctx());
 
 		this.location = location;
 		this.level = level;

@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.googlecode.playn</groupId>
     <artifactId>playn-project</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
   </parent>
 
   <groupId>com.github.jamescarter.hexahop</groupId>
@@ -14,7 +14,7 @@
   <name>HexAHop Metaproject</name>
 
   <properties>
-    <playn.version>1.6</playn.version>
+    <playn.version>1.7</playn.version>
   </properties>
 
   <profiles>
